@@ -1,0 +1,219 @@
+{
+  "List": {
+    "ListName": "API T-Track|Info CEN B",
+    "BottomPicture": "",
+    "CoverSheet": "",
+    "BackSheet": "",
+    "Design": "",
+    "DesignShow": 2,
+    "EveryOtherLineGray": false,
+    "FooterColor": "",
+    "GrayLine": true,
+    "HeadLine1": " 28° Trofeo Les Grandes Montagnes (2)",
+    "HeightBottomPicture": 40,
+    "LineColor": "",
+    "LineBackColor": "",
+    "LineDynamicFormat": "",
+    "LineSpacing": 1,
+    "MaxRecords": 1,
+    "MultiplierField": "",
+    "SepLine": true,
+    "TopRightPicture": "",
+    "Remarks": "",
+    "LastChange": "2025-06-11 15:45:01",
+    "FooterText1": "",
+    "FooterText2": "",
+    "FooterText3": "[Time]",
+    "Orders": [],
+    "Filters": [
+      {
+        "OrConjunction": false,
+        "Expression1": "CONTEST",
+        "Operator": "=",
+        "Expression2": "3"
+      }
+    ],
+    "Fields": [
+      {
+        "Expression": "DCount(\"[BIB]\u003E0 AND [CONTEST]=3\")",
+        "Label": "Entries"
+      },
+      {
+        "Expression": "DCount(\"[BIB]\u003E0 AND [CONTEST]=3\")",
+        "Label": "Iscritti"
+      },
+      {
+        "Expression": "dCount(\"[CONTEST]=3 AND [Pass_3]=1\") & \" = \" & format([dCount(\"[CONTEST]=3 AND [Pass_3]=1\")*100/dCount(\"[BIB]\u003E0 AND [CONTEST]=3\")];\"s,kk\") & \" %\"",
+        "Label": "Finished"
+      },
+      {
+        "Expression": "dCount(\"[CONTEST]=3 AND ([Elimination_Gait_1] OR [Elimination_Gait_2] OR [Elimination_Gait_3]=1)\") & \" = \" & format([dCount(\"[CONTEST]=3 AND ([Elimination_Gait_1]OR [Elimination_Gait_2] OR [Elimination_Gait_3]=1)\")*100/dCount(\"[BIB]\u003E0 AND [CONTEST]=3\")];\"s,kk\") & \" %\"",
+        "Label": "Eliminated"
+      },
+      {
+        "Expression": "CONTEST.START",
+        "Label": "Start"
+      },
+      {
+        "Expression": "\"----------------------------------\"",
+        "Label": "Phase 1"
+      },
+      {
+        "Expression": "CONTEST.Fase_1_km",
+        "Label": "Km"
+      },
+      {
+        "Expression": "CONTEST.Fase_1_colore",
+        "Label": "Colour"
+      },
+      {
+        "Expression": "\"64\"",
+        "Label": "Heart Rate"
+      },
+      {
+        "Expression": "format([CONTEST.1_max_in_time];\"mm:ss\")",
+        "Label": "Max In Time"
+      },
+      {
+        "Expression": "format([CONTEST.1_hold_time];\"mm:ss\")",
+        "Label": "Hold Time"
+      },
+      {
+        "Expression": "",
+        "Label": "Compulsory Re Insp."
+      },
+      {
+        "Expression": "",
+        "Label": "Max Time"
+      },
+      {
+        "Expression": "",
+        "Label": "Min Speed"
+      },
+      {
+        "Expression": "\"----------------------------------\"",
+        "Label": "Phase 2"
+      },
+      {
+        "Expression": "CONTEST.Fase_2_km",
+        "Label": "Km"
+      },
+      {
+        "Expression": "CONTEST.Fase_1_colore",
+        "Label": "Colour"
+      },
+      {
+        "Expression": "\"64\"",
+        "Label": "Heart Rate"
+      },
+      {
+        "Expression": "format([CONTEST.2_max_in_time];\"mm:ss\")",
+        "Label": "Max In Time"
+      },
+      {
+        "Expression": "format([CONTEST.2_hold_time];\"mm:ss\")",
+        "Label": "Hold Time"
+      },
+      {
+        "Expression": "\"YES\"",
+        "Label": "Compulsory Re Insp."
+      },
+      {
+        "Expression": "",
+        "Label": "Max Time"
+      },
+      {
+        "Expression": "",
+        "Label": "Min Speed"
+      },
+      {
+        "Expression": "\"----------------------------------\"",
+        "Label": "Phase 3"
+      },
+      {
+        "Expression": "CONTEST.Fase_3_km",
+        "Label": "Km"
+      },
+      {
+        "Expression": "CONTEST.Fase_1_colore",
+        "Label": "Colour"
+      },
+      {
+        "Expression": "\"64\"",
+        "Label": "Heart Rate"
+      },
+      {
+        "Expression": "format([CONTEST.3_max_in_time];\"mm:ss\")",
+        "Label": "Max In Time"
+      },
+      {
+        "Expression": " ",
+        "Label": "Hold Time"
+      },
+      {
+        "Expression": "",
+        "Label": "Compulsory Re Insp."
+      },
+      {
+        "Expression": "\"\"",
+        "Label": "Max Time"
+      },
+      {
+        "Expression": "\"10 km/h\"",
+        "Label": "Min Speed"
+      }
+    ],
+    "SelectorResults": []
+  },
+  "Data": [
+    [
+      "305",
+      "34",
+      "13",
+      "10 = 76,92 %",
+      "3 = 23,07 %",
+      "07:00:00",
+      "----------------------------------",
+      "28",
+      "Blue",
+      "64",
+      "15:00",
+      "40:00",
+      "",
+      "28",
+      "15:00",
+      "40:00",
+      "YES",
+      "28",
+      "20:00",
+      "",
+      "",
+      "10 km/h"
+    ]
+  ],
+  "DataFields": [
+    "BIB",
+    "ID",
+    "DCount(\"[BIB]\u003E0 AND [CONTEST]=3\")",
+    "dCount(\"[CONTEST]=3 AND [Pass_3]=1\") & \" = \" & format([dCount(\"[CONTEST]=3 AND [Pass_3]=1\")*100/dCount(\"[BIB]\u003E0 AND [CONTEST]=3\")];\"s,kk\") & \" %\"",
+    "dCount(\"[CONTEST]=3 AND ([Elimination_Gait_1] OR [Elimination_Gait_2] OR [Elimination_Gait_3]=1)\") & \" = \" & format([dCount(\"[CONTEST]=3 AND ([Elimination_Gait_1]OR [Elimination_Gait_2] OR [Elimination_Gait_3]=1)\")*100/dCount(\"[BIB]\u003E0 AND [CONTEST]=3\")];\"s,kk\") & \" %\"",
+    "CONTEST.START",
+    "\"----------------------------------\"",
+    "CONTEST.Fase_1_km",
+    "CONTEST.Fase_1_colore",
+    "\"64\"",
+    "format([CONTEST.1_max_in_time];\"mm:ss\")",
+    "format([CONTEST.1_hold_time];\"mm:ss\")",
+    "",
+    "CONTEST.Fase_2_km",
+    "format([CONTEST.2_max_in_time];\"mm:ss\")",
+    "format([CONTEST.2_hold_time];\"mm:ss\")",
+    "\"YES\"",
+    "CONTEST.Fase_3_km",
+    "format([CONTEST.3_max_in_time];\"mm:ss\")",
+    " ",
+    "\"\"",
+    "\"10 km/h\""
+  ],
+  "GroupFilters": null
+}

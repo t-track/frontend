@@ -1,43 +1,39 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { LiveDataProvider } from './components/LiveDataProvider';
-import Layout from './components/Layout';
-import EventsList from './pages/EventsList';
-import EventDetails from './pages/EventDetails';
-import RiderProfile from './pages/RiderProfile';
-import HorseProfile from './pages/HorseProfile';
-import Search from './pages/Search';
-import RidersList from './pages/RidersList';
-import HorsesList from './pages/HorsesList';
-import CategoryResults from './pages/CategoryResults';
+import { AppProvider } from './contexts/AppContext';
+import { AuthProvider } from './contexts/AuthContext';
+import Layout from './components/Layout/Layout';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
+import CategoryDetail from './pages/CategoryDetail';
+import Riders from './pages/Riders';
+import Horses from './pages/Horses';
+import History from './pages/History';
+import Settings from './pages/Settings';
 
 function App() {
-  useEffect(() => {
-    // Register service worker for PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log('Service Worker registered'))
-        .catch(err => console.log('Service Worker registration failed:', err));
-    }
-  }, []);
-
   return (
-    <LiveDataProvider>
+    <AuthProvider>
+      <AppProvider>
       <Router>
         <Layout>
           <Routes>
-            <Route path="/" element={<EventsList />} />
-            <Route path="/event/:id" element={<EventDetails />} />
-            <Route path="/rider/:id" element={<RiderProfile />} />
-            <Route path="/horse/:id" element={<HorseProfile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/riders" element={<RidersList />} />
-            <Route path="/horses" element={<HorsesList />} />
-            <Route path="/event/:eventId/category/:categoryId" element={<CategoryResults />} />
+            <Route path="/" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+            <Route path="/events/:eventId/categories/:categoryName" element={<CategoryDetail />} />
+            <Route path="/riders" element={<Riders />} />
+            <Route path="/riders/:id" element={<Riders />} />
+            <Route path="/horses" element={<Horses />} />
+            <Route path="/horses/:id" element={<Horses />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>
+        <PWAInstallPrompt />
       </Router>
-    </LiveDataProvider>
+      </AppProvider>
+    </AuthProvider>
   );
 }
 

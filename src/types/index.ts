@@ -5,82 +5,92 @@ export interface Event {
   startTime: string;
   endTime: string;
   subscriptionDeadline: string;
-  status: 'upcoming' | 'past' | 'live';
-  categories: Category[];
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  eventId: string;
-  riders: Rider[];
+  status: 'upcoming' | 'live' | 'finished';
+  categories: string[];
+  backgroundImage: string;
+  description?: string;
 }
 
 export interface Rider {
   id: string;
   name: string;
   nationality: string;
-  horse: Horse;
-  position?: number;
-  currentPosition?: number;
-  gapToLeader?: string;
-  currentPhase?: number;
-  isActive?: boolean;
-  totalTime?: string;
-  currentTime?: string;
-  averageSpeed?: number;
-  points?: number;
+  club: string;
   region: string;
+  fiseId: string;
+  horseId: string;
+  horseName: string;
+  position?: number;
+  totalTime?: string;
   phases: Phase[];
-  vetChecks: VetCheck[];
-  bib?: string;
+  veterinaryChecks: VeterinaryCheck[];
 }
 
 export interface Horse {
   id: string;
   name: string;
+  fiseId: string;
   age?: number;
   breed?: string;
   owner?: string;
-  pastResults?: Result[];
+  results: HorseResult[];
 }
 
 export interface Phase {
-  phaseNumber: number;
+  phase: number;
+  km: number;
   startTime: string;
-  intermediateControl: string;
-  controlAverage: number;
-  arrival: string;
-  time: string;
-  arrivalAverage: number;
+  arrivalTime: string;
+  loopTime: string;
+  speed: number;
+  inTime: string;
   recoveryTime: string;
-  heartRate: number;
-  totalAnticipation?: string;
-  scoringTime?: string;
-  scoringAverage?: number;
-  score?: number;
+  phaseSpeed: number;
+  rideTime: string;
+  rank?: number;
+  gap?: string;
 }
 
-export interface VetCheck {
+export interface VeterinaryCheck {
   phase: string;
-  recoveryTime: string;
+  recoveryTime?: string;
   heartRate: number;
-  recIndex: number;
-  respiratory: string;
+  respiration: string;
   mucous: string;
-  capRefill: number;
-  skin: number;
+  capillaryRefill: string;
+  skin: string;
   gutSounds: string;
   girth: string;
   muscleTone: string;
   gait: string;
-  vet: string;
+  veterinary: string;
 }
 
-export interface Result {
+export interface HorseResult {
   eventId: string;
   eventName: string;
   date: string;
   position: number;
-  category: string;
+  riderId: string;
+  riderName: string;
+}
+
+export interface LiveData {
+  List: {
+    ListName: string;
+    HeadLine1: string;
+    Fields: Array<{
+      Expression: string;
+      Label: string;
+    }>;
+  };
+  Data: string[][];
+  DataFields: string[];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  distance: number;
+  description: string;
 }

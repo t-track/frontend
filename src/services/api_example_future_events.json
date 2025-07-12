@@ -1,0 +1,51 @@
+{
+  "List": {
+    "ListName": "API T-Track|Future CEN B",
+    "BottomPicture": "",
+    "HeadLine1": "Start list",
+    "HeadLine2": "",
+    "TopRightPicture": "common\\T-TRACK - LOGO 828x315 per Facebook.jpg",
+    "Remarks": "",
+    "LastChange": "2025-04-12 06:25:44",
+    "FooterText1": "",
+    "FooterText2": "",
+    "FooterText3": "",
+    "Orders": [
+      {
+        "Expression": "BIB", "Descending": false,   "Grouping": 0,   "GroupFilterDefault": 1,   "GroupFilterLabel": "", "PageBreak": 0,   "FontName": "", "FontSize": 12,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Color": "", "BackgroundColor": "", "Spacing": 2
+      }
+    ],
+    "Filters": [
+      {
+        "OrConjunction": false,   "Expression1": "CONTEST", "Operator": "=", "Expression2": "3"
+      }
+    ],
+    "Fields": [
+      { "Expression": "HORSE", "Label": "HORSE", "Label2": "", "Alignment": 1,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Line": 1,   "Color": "", "Link": "", "ColSpan": 0,   "ColOffset": 0,   "Position": 0,   "DynamicFormat": "", "PreviewOnly": false,   "ResponsiveHide": 0 }, 
+      { "Expression": "[ID_FISE_FEI]", "Label": "Horse ID", "Label2": "", "Alignment": 1,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Line": 1,   "Color": "", "Link": "", "ColSpan": 0,   "ColOffset": 0,   "Position": 0,   "DynamicFormat": "", "PreviewOnly": false,   "ResponsiveHide": 0 }, 
+      { "Expression": "[LICENSE]", "Label": "Rider ID", "Label2": "", "Alignment": 1,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Line": 1,   "Color": "", "Link": "", "ColSpan": 0,   "ColOffset": 0,   "Position": 0,   "DynamicFormat": "", "PreviewOnly": false,   "ResponsiveHide": 0 }, 
+      { "Expression": "[LASTNAME]&\" \"&[FIRSTNAME]", "Label": "RIDER", "Label2": "", "Alignment": 1,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Line": 1,   "Color": "", "Link": "", "ColSpan": 0,   "ColOffset": 0,   "Position": 0,   "DynamicFormat": "", "PreviewOnly": false,   "ResponsiveHide": 0 }, 
+      { "Expression": "if([CLUB]\u003E0;[CLUB];[NATION.IOCNAME])", "Label": "Flag", "Label2": "", "Alignment": 1,   "FontBold": false,   "FontItalic": false,   "FontUnderlined": false,   "Line": 2,   "Color": "", "Link": "", "ColSpan": 0,   "ColOffset": 0,   "Position": 0,   "DynamicFormat": "", "PreviewOnly": false,   "ResponsiveHide": 0 }
+    ],
+    "SelectorResults": []
+  },
+  "Data": [
+    [ "305", "34", "NIHAL TAOUY", "", "FISE63355/A", "CASALENA GABRIELE", "Valle d'Aosta"],
+    [ "308", "37", "CYRILLA", "", "FISE40509/B", "FRASSI MARCO", "Veneto" ],
+    [ "309", "38", "AMETYST DELLE ROSE", "", "007173/A", "PATRIA ADRIANO", "Piemonte" ],
+    [ "310", "39", "KP CASSIOPEA", "", "FISE6015/C", "TORRE CATERINA", "Piemonte" ],
+    [ "311", "40", "KADEV AA", "", "FISE52669/B", "TESTA MANUEL", "Lombardia" ],
+    [ "312", "41", "KAHIPAN", "", "FISE124297/B", "AMERALDI ALICE", "Lombardia" ],
+    [ "313", "42", "TASHUNKA WITKA", "", "FISE4833/Y", "GARBETTA COSTANZA", "Valle d'Aosta"],
+    [ "314", "43", "RAMSES", "", "FISE6146/Y", "BARMASSE CELINE", "Valle d'Aosta" ],
+    [ "315", "44", "SHEITAN", "", "FISE22400/C", "VASSALLO CHIARA", "Piemonte" ],
+    [ "316", "45", "ZIRU DE ILOI", "", "FISE32947/B", "GALLI VALENTINA", "Emilia Romagna" ],
+    [ "317", "46", "EDUARDO", "", "FISE5950/Y", "LUSTRISSY ALESSIA", "Valle d'Aosta" ],
+    [ "319", "48", "ANIMOSO", "", "008194/A", "BOFFITO MIRKO", "Piemonte" ],
+    [ "320", "105", "ANTO DI GALLURA", "", "", "CAMPAGNONI GIACOMINO", "LOMBARDIA" ]
+  ],
+  "DataFields": [
+    "BIB", "ID", "HORSE", "[ID_FISE_FEI]", "[LICENSE]", "[LASTNAME]&\" \"&[FIRSTNAME]", "if([CLUB]\u003E0;[CLUB];[NATION.IOCNAME])"
+  ],
+  "GroupFilters": null
+}
