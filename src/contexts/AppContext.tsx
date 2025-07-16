@@ -21,9 +21,9 @@ export const useApp = () => {
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [isPWA, setIsPWA] = useState(false);
-  const [liveApiUrl, setLiveApiUrl] = useState('https://api.raceresult.com/345604/OOYDF8PDY8ZDNZIVSQKTGQTOYG62NSF4');
-  const [eventApiUrl, setEventApiUrl] = useState('https://api.raceresult.com/345604/OOYDF8PDY8ZDNZIVSQKTGQTOYG62NSF4');
-  const [futureEventApiUrl, setFutureEventApiUrl] = useState('https://api.raceresult.com/345604/OOYDF8PDY8ZDNZIVSQKTGQTOYG62NSF4');
+  const [liveApiUrl, setLiveApiUrl] = useState('https://api.raceresult.com/345604/y');
+  const [eventApiUrl, setEventApiUrl] = useState('https://api.raceresult.com/345604/y');
+  const [futureEventApiUrl, setFutureEventApiUrl] = useState('https://api.raceresult.com/345604/y');
 
   useEffect(() => {
     // Check if running as PWA
