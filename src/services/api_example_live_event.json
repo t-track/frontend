@@ -1,22 +1,175 @@
 {
   "List": {
-    "ListName": "API T-Track|Live CEN B", "BottomPicture": "", "ColumnHeadsColor": "", "ColumnHeadsShow": 2,
+    "ListName": "API T-Track|Live CEN B",
+    "BottomPicture": "",
+    "BottomPictureShow": 0,
+    "ColumnHeadsFontName": "",
+    "ColumnHeadsFontSize": 12,
+    "ColumnHeadsFontBold": true,
+    "ColumnHeadsFontItalic": false,
+    "ColumnHeadsFontUnderlined": false,
+    "ColumnHeadsColor": "",
+    "ColumnHeadsShow": 2,
     "Columns": 1,
     "ColumnSpacing": 5,
-    "CoverSheet": "", "BackSheet": "", "Design": "", "DesignShow": 2,
-    "HeadLine1": " 28° Trofeo Les Grandes Montagnes (2)", "TopRightPicture": "", "ListHeaderText": "", "ListFooterText": "", "Remarks": "", "LastChange": "2025-07-08 20:45:44", "FooterText1": "", "FooterText2": "", "FooterText3": "[Time]", "Orders": [
+    "CoverSheet": "",
+    "BackSheet": "",
+    "Design": "",
+    "DesignShow": 2,
+    "EveryOtherLineGray": false,
+    "FontName": "Arial",
+    "FontSize": 10,
+    "FooterFontName": "",
+    "FooterFontSize": 10,
+    "FooterFontBold": false,
+    "FooterFontItalic": false,
+    "FooterFontUnderlined": false,
+    "FooterColor": "",
+    "GrayLine": true,
+    "HeadLine1": " 28° Trofeo Les Grandes Montagnes (2)",
+    "HeadLine1FontName": "",
+    "HeadLine1FontSize": 16,
+    "HeadLine1FontBold": false,
+    "HeadLine1FontItalic": false,
+    "HeadLine1FontUnderlined": true,
+    "HeadLine2": "",
+    "HeadLine1Color": "",
+    "HeadLine1Show": 2,
+    "HeadLine2FontName": "",
+    "HeadLine2FontSize": 16,
+    "HeadLine2FontBold": true,
+    "HeadLine2FontItalic": false,
+    "HeadLine2FontUnderlined": false,
+    "HeadLine2Color": "",
+    "HeadLine2Show": 2,
+    "HeightBottomPicture": 40,
+    "LineColor": "",
+    "LineBackColor": "",
+    "LineDynamicFormat": "",
+    "LineSpacing": 1,
+    "MaxRecords": 0,
+    "MultiplierField": "",
+    "PageFormat": 0,
+    "PageMarginBottom": 10,
+    "PageMarginLeft": 10,
+    "PageMarginRight": 10,
+    "PageMarginTop": 10,
+    "PageSize": 3,
+    "PageHeight": 297,
+    "PageWidth": 210,
+    "SepLine": true,
+    "TopRightPicture": "",
+    "TopRightPictureShow": 0,
+    "ListHeaderText": "",
+    "ListFooterText": "",
+    "ListHeaderFooterFontName": "",
+    "ListHeaderFooterFontSize": 10,
+    "ListHeaderFooterFontBold": false,
+    "ListHeaderFooterFontItalic": false,
+    "ListHeaderFooterFontUnderlined": false,
+    "ListHeaderFooterAlignment": 1,
+    "Remarks": "",
+    "LastChange": "2025-07-08 20:45:44",
+    "FooterText1": "",
+    "FooterText2": "",
+    "FooterText3": "[Time]",
+    "Orders": [
       {
-        "Expression": "[Elimination_Gait_1]=0" },
+        "Expression": "[Elimination_Gait_1]=0",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      },
       {
-        "Expression": "[Elimination_Gait_2]=0" },
+        "Expression": "[Elimination_Gait_2]=0",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      },
       {
-        "Expression": "[Elimination_Gait_3]=0" },
+        "Expression": "[Elimination_Gait_3]=0",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      },
       {
-        "Expression": "val(replace([AfterRide 3 anelli];-1;98))" },
+        "Expression": "val(replace([AfterRide 3 anelli];-1;98))",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      },
       {
-        "Expression": "val(replace([AfterRide2];-1;98))" },
+        "Expression": "val(replace([AfterRide2];-1;98))",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      },
       {
-        "Expression": "val(replace([AfterRide1];-1;98))" }
+        "Expression": "val(replace([AfterRide1];-1;98))",
+        "Descending": false,
+        "Grouping": 0,
+        "GroupFilterDefault": 1,
+        "GroupFilterLabel": "",
+        "PageBreak": 0,
+        "FontName": "",
+        "FontSize": 12,
+        "FontBold": false,
+        "FontItalic": false,
+        "FontUnderlined": false,
+        "Color": "",
+        "BackgroundColor": "",
+        "Spacing": 0
+      }
     ],
     "Filters": [
       {
@@ -40,7 +193,7 @@
         "Label": "RIDER ID"
       },
       {
-        "Expression": "if([CLUB]\u003E0;[CLUB];[NATION.IOCNAME])",
+        "Expression": "if([CLUB]>0;[CLUB];[NATION.IOCNAME])",
         "Label": "FLAG"
       },
       {
@@ -52,7 +205,7 @@
         "Label": "HORSE ID"
       },
       {
-        "Expression": "Switch([AfterRide 3 anelli]\u003E0;[AfterRide 3 anelli];[AfterRide2]\u003E0;[AfterRide2];[AfterRide1]\u003E0;[AfterRide1])",
+        "Expression": "Switch([AfterRide 3 anelli]>0;[AfterRide 3 anelli];[AfterRide2]>0;[AfterRide2];[AfterRide1]>0;[AfterRide1])",
         "Label": "Main rank"
       },
       {
@@ -100,11 +253,11 @@
         "Label": "Ride Speed"
       },
       {
-        "Expression": "if([AfterRide1]\u003E0;[AfterRide1]& \"° \";\"\")",
+        "Expression": "if([AfterRide1]>0;[AfterRide1]& \"° \";\"\")",
         "Label": "Rank"
       },
       {
-        "Expression": "Switch([Elimination_Gait_1]=1;[EC1];[T12]\u003E0;[TIME12]) & if([Pass_1]=1;\" [\"& GapTimeTop(4;11;\"-\";\"+HH:mm:ss''\") &\"]\")",
+        "Expression": "Switch([Elimination_Gait_1]=1;[EC1];[T12]>0;[TIME12]) & if([Pass_1]=1;\" [\"& GapTimeTop(4;11;\"-\";\"+HH:mm:ss''\") &\"]\")",
         "Label": "Start"
       },
       {
@@ -164,11 +317,11 @@
         "Label": "Ride Speed"
       },
       {
-        "Expression": "if([AfterRide2]\u003E0;[AfterRide2]& \"° \";\"\")",
+        "Expression": "if([AfterRide2]>0;[AfterRide2]& \"° \";\"\")",
         "Label": "Rank"
       },
       {
-        "Expression": "Switch([Elimination_Gait_2]=1;[EC2];[T42]\u003E0;[TIME42]) & if([Pass_2]=1;\" [\"& GapTimeTop(33;12;\"-\";\"+HH:mm:ss''\") &\"]\")",
+        "Expression": "Switch([Elimination_Gait_2]=1;[EC2];[T42]>0;[TIME42]) & if([Pass_2]=1;\" [\"& GapTimeTop(33;12;\"-\";\"+HH:mm:ss''\") &\"]\")",
         "Label": "Start"
       },
       {
@@ -228,11 +381,11 @@
         "Label": "Ride Speed"
       },
       {
-        "Expression": "if([AfterRide 3 anelli]\u003E0 and [Pass_3]=1;[AfterRide 3 anelli]& \"° \";\"\")",
+        "Expression": "if([AfterRide 3 anelli]>0 and [Pass_3]=1;[AfterRide 3 anelli]& \"° \";\"\")",
         "Label": "Rank"
       },
       {
-        "Expression": "Switch([Elimination_Gait_3]=1;[EC3];[T62]\u003E0;[TIME62];[Pass_3]=1;\"-\")",
+        "Expression": "Switch([Elimination_Gait_3]=1;[EC3];[T62]>0;[TIME62];[Pass_3]=1;\"-\")",
         "Label": "Start"
       },
       {
@@ -324,7 +477,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T14]\u003E0 ;\"+\"&[T14];[T14])",
+        "Expression": "IF([T14]>0 ;\"+\"&[T14];[T14])",
         "Label": "Rec. Index"
       },
       {
@@ -380,7 +533,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T14]\u003E0 ;\"+\"&[T14];[T14])",
+        "Expression": "IF([T14]>0 ;\"+\"&[T14];[T14])",
         "Label": "Rec. Index"
       },
       {
@@ -440,7 +593,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T44]\u003E0 ;\"+\"&[T44];[T44])",
+        "Expression": "IF([T44]>0 ;\"+\"&[T44];[T44])",
         "Label": "Rec. Index"
       },
       {
@@ -496,7 +649,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T47]\u003E0 ;\"+\"&[T47];[T47])",
+        "Expression": "IF([T47]>0 ;\"+\"&[T47];[T47])",
         "Label": "Rec. Index"
       },
       {
@@ -556,7 +709,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T67]\u003E0 ;\"+\"&[T67];[T67])",
+        "Expression": "IF([T67]>0 ;\"+\"&[T67];[T67])",
         "Label": "Rec. Index"
       },
       {
@@ -612,7 +765,7 @@
         "Label": "Heart Rate"
       },
       {
-        "Expression": "IF([T67]\u003E0 ;\"+\"&[T67];[T67])",
+        "Expression": "IF([T67]>0 ;\"+\"&[T67];[T67])",
         "Label": "Rec. Index"
       },
       {
@@ -700,7 +853,144 @@
     ]
   ],
   "DataFields": [
-    "BIB", "ID", "DisplayName", "[ID_FISE_CAVALIERE]", "if([CLUB]\u003E0;[CLUB];[NATION.IOCNAME])", "[Horse]", "[ID_FISE_CAVALLO]", "Switch([AfterRide 3 anelli]\u003E0;[AfterRide 3 anelli];[AfterRide2]\u003E0;[AfterRide2];[AfterRide1]\u003E0;[AfterRide1])", "\"----------------------------------\"", "\"1\" & \" - \" & [_1_KM]", "Partenza 1", "TIME3", "TIME6", "Media arrivo 1", "TIME4", "TIME5", "Media in vet 1", "TIME7", "TIME10", "if([AfterRide1]\u003E0;[AfterRide1]& \"° \";\"\")", "Switch([Elimination_Gait_1]=1;[EC1];[T12]\u003E0;[TIME12]) & if([Pass_1]=1;\" [\"& GapTimeTop(4;11;\"-\";\"+HH:mm:ss''\") &\"]\")", "if([Pass_1]=1;\"yes\")", "TIME16", " ", "\"2\" & \" - \" & [_2_KM]", "Partenza 2", "Arrivo 2", "TIME35", "TIME39", "TIME33", "TIME34", "TIME40", "TIME37", "Average 2", "if([AfterRide2]\u003E0;[AfterRide2]& \"° \";\"\")", "Switch([Elimination_Gait_2]=1;[EC2];[T42]\u003E0;[TIME42]) & if([Pass_2]=1;\" [\"& GapTimeTop(33;12;\"-\";\"+HH:mm:ss''\") &\"]\")", "if([Pass_2]=1;\"yes\")", "TIME46", "", "\"3\" & \" - \" & [_3_KM]", "Partenza 3", "Arrivo 3 & if([Pass_3]=1;\" [\"& GapTimeTop(52;1;\"\";\"+HH:mm:ss''\") &\"]\")", "Tempo arrivo 3", "Media arrivo 3", "In vet 3", "Recovery 3", "TIME59", "Total time 3 anelli", "TIME65", "if([AfterRide 3 anelli]\u003E0 and [Pass_3]=1;[AfterRide 3 anelli]& \"° \";\"\")", "Switch([Elimination_Gait_3]=1;[EC3];[T62]\u003E0;[TIME62];[Pass_3]=1;\"-\")", "if([Pass_3]=1;\"yes\")", "\"PRE\"", "\"\"", "Heart_Rate", "Respiro", "Mucous", "Capillar_Refill", "Skin", "Gut_Sounds", "Girth_Back_Whiters", "Muscle_Tone", "Gait", "Vet", "\"1\"", "TIME5 ", "Heart_Rate_1", "IF([T14]\u003E0 ;\"+\"&[T14];[T14])", "Respiro_1", "Mucous_1", "Capillar_Refill_1", "Skin_1", "Gut_Sounds_1", "Girth_Back_Whiters_1", "Muscle_Tone_1", "Gait_1", "Vet_1", "\"1 - Re Insp.\"", "Heart_Rate_1_RI", "Respiro_1_RI", "Mucous_1_RI", "Capillar_Refill_1_RI", "Skin_1_RI", "Gut_Sounds_1_RI", "Girth_Back_Whiters_1_RI", "Muscle_Tone_1_RI", "Gait_1_RI", "Vet_1_RI", "if([Riesame_1]=1;1;0)", "\"2\"", "Heart_Rate_2", "IF([T44]\u003E0 ;\"+\"&[T44];[T44])", "Respiro_2", "Mucous_2", "Capillar_Refill_2", "Skin_2", "Gut_Sounds_2", "Girth_Back_Whiters_2", "Muscle_Tone_2", "Gait_2", "Vet_2", "\"2 - Re Insp.\"", "Heart_Rate_2_RI", "IF([T47]\u003E0 ;\"+\"&[T47];[T47])", "Respiro_2_RI", "Mucous_2_RI", "Capillar_Refill_2_RI", "Skin_2_RI", "Gut_Sounds_2_RI", "Girth_Back_Whiters_2_RI", "Muscle_Tone_2_RI", "Gait_2_RI", "Vet_2_RI", "if([Riesame_2]=1;1;0)", "\"3\"", "Heart_Rate_3", "IF([T67]\u003E0 ;\"+\"&[T67];[T67])", "Respiro_3", "Mucous_3", "Capillar_Refill_3", "Skin_3", "Gut_Sounds_3", "Girth_Back_Whiters_3", "Muscle_Tone_3", "Gait_3", "Vet_3", "\"3 - Re Insp.\"", "Heart_Rate_3_RI", "Respiro_3_RI", "Mucous_3_RI", "Capillar_Refill_3_RI", "Skin_3_RI", "Gut_Sounds_3_RI", "Girth_Back_Whiters_3_RI", "Muscle_Tone_3_RI", "Gait_3_RI", "Vet_3_RI", "if([Riesame_3]=1;1;0)"
+    "BIB",
+    "ID",
+    "DisplayName",
+    "[ID_FISE_CAVALIERE]",
+    "if([CLUB]>0;[CLUB];[NATION.IOCNAME])",
+    "[Horse]",
+    "[ID_FISE_CAVALLO]",
+    "Switch([AfterRide 3 anelli]>0;[AfterRide 3 anelli];[AfterRide2]>0;[AfterRide2];[AfterRide1]>0;[AfterRide1])",
+    "\"----------------------------------\"",
+    "\"1\" & \" - \" & [_1_KM]",
+    "Partenza 1",
+    "TIME3",
+    "TIME6",
+    "Media arrivo 1",
+    "TIME4",
+    "TIME5",
+    "Media in vet 1",
+    "TIME7",
+    "TIME10",
+    "if([AfterRide1]>0;[AfterRide1]& \"° \";\"\")",
+    "Switch([Elimination_Gait_1]=1;[EC1];[T12]>0;[TIME12]) & if([Pass_1]=1;\" [\"& GapTimeTop(4;11;\"-\";\"+HH:mm:ss''\") &\"]\")",
+    "if([Pass_1]=1;\"yes\")",
+    "TIME16",
+    " ",
+    "\"2\" & \" - \" & [_2_KM]",
+    "Partenza 2",
+    "Arrivo 2",
+    "TIME35",
+    "TIME39",
+    "TIME33",
+    "TIME34",
+    "TIME40",
+    "TIME37",
+    "Average 2",
+    "if([AfterRide2]>0;[AfterRide2]& \"° \";\"\")",
+    "Switch([Elimination_Gait_2]=1;[EC2];[T42]>0;[TIME42]) & if([Pass_2]=1;\" [\"& GapTimeTop(33;12;\"-\";\"+HH:mm:ss''\") &\"]\")",
+    "if([Pass_2]=1;\"yes\")",
+    "TIME46",
+    "",
+    "\"3\" & \" - \" & [_3_KM]",
+    "Partenza 3",
+    "Arrivo 3 & if([Pass_3]=1;\" [\"& GapTimeTop(52;1;\"\";\"+HH:mm:ss''\") &\"]\")",
+    "Tempo arrivo 3",
+    "Media arrivo 3",
+    "In vet 3",
+    "Recovery 3",
+    "TIME59",
+    "Total time 3 anelli",
+    "TIME65",
+    "if([AfterRide 3 anelli]>0 and [Pass_3]=1;[AfterRide 3 anelli]& \"° \";\"\")",
+    "Switch([Elimination_Gait_3]=1;[EC3];[T62]>0;[TIME62];[Pass_3]=1;\"-\")",
+    "if([Pass_3]=1;\"yes\")",
+    "\"PRE\"",
+    "\"\"",
+    "Heart_Rate",
+    "Respiro",
+    "Mucous",
+    "Capillar_Refill",
+    "Skin",
+    "Gut_Sounds",
+    "Girth_Back_Whiters",
+    "Muscle_Tone",
+    "Gait",
+    "Vet",
+    "\"1\"",
+    "TIME5 ",
+    "Heart_Rate_1",
+    "IF([T14]>0 ;\"+\"&[T14];[T14])",
+    "Respiro_1",
+    "Mucous_1",
+    "Capillar_Refill_1",
+    "Skin_1",
+    "Gut_Sounds_1",
+    "Girth_Back_Whiters_1",
+    "Muscle_Tone_1",
+    "Gait_1",
+    "Vet_1",
+    "\"1 - Re Insp.\"",
+    "Heart_Rate_1_RI",
+    "Respiro_1_RI",
+    "Mucous_1_RI",
+    "Capillar_Refill_1_RI",
+    "Skin_1_RI",
+    "Gut_Sounds_1_RI",
+    "Girth_Back_Whiters_1_RI",
+    "Muscle_Tone_1_RI",
+    "Gait_1_RI",
+    "Vet_1_RI",
+    "if([Riesame_1]=1;1;0)",
+    "\"2\"",
+    "Heart_Rate_2",
+    "IF([T44]>0 ;\"+\"&[T44];[T44])",
+    "Respiro_2",
+    "Mucous_2",
+    "Capillar_Refill_2",
+    "Skin_2",
+    "Gut_Sounds_2",
+    "Girth_Back_Whiters_2",
+    "Muscle_Tone_2",
+    "Gait_2",
+    "Vet_2",
+    "\"2 - Re Insp.\"",
+    "Heart_Rate_2_RI",
+    "IF([T47]>0 ;\"+\"&[T47];[T47])",
+    "Respiro_2_RI",
+    "Mucous_2_RI",
+    "Capillar_Refill_2_RI",
+    "Skin_2_RI",
+    "Gut_Sounds_2_RI",
+    "Girth_Back_Whiters_2_RI",
+    "Muscle_Tone_2_RI",
+    "Gait_2_RI",
+    "Vet_2_RI",
+    "if([Riesame_2]=1;1;0)",
+    "\"3\"",
+    "Heart_Rate_3",
+    "IF([T67]>0 ;\"+\"&[T67];[T67])",
+    "Respiro_3",
+    "Mucous_3",
+    "Capillar_Refill_3",
+    "Skin_3",
+    "Gut_Sounds_3",
+    "Girth_Back_Whiters_3",
+    "Muscle_Tone_3",
+    "Gait_3",
+    "Vet_3",
+    "\"3 - Re Insp.\"",
+    "Heart_Rate_3_RI",
+    "Respiro_3_RI",
+    "Mucous_3_RI",
+    "Capillar_Refill_3_RI",
+    "Skin_3_RI",
+    "Gut_Sounds_3_RI",
+    "Girth_Back_Whiters_3_RI",
+    "Muscle_Tone_3_RI",
+    "Gait_3_RI",
+    "Vet_3_RI",
+    "if([Riesame_3]=1;1;0)"
   ],
   "GroupFilters": null
 }

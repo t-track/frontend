@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Clock, Heart, Activity, Flag, ChevronDown, ChevronUp, RefreshCw } from 'lucide-react';
+import { Trophy, Clock, Heart, Activity, Flag, ChevronDown, ChevronUp, RefreshCw, CheckCircle, Loader, Circle } from 'lucide-react';
 import { LiveData } from '../types';
 import { fetchLiveData } from '../services/api';
 
@@ -67,6 +67,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
         if (data) {
           setLiveData(data);
           processLiveData(data);
+          
         }
       } catch (err) {
         setError('Failed to fetch live data');
@@ -115,17 +116,30 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
 
   const processLiveData = (data: LiveData) => {
     const riders: ProcessedRider[] = data.Data.map((riderData) => {
-      const getValue = (label: string) => {
-        const index = data.List.Fields.findIndex(field => field.Label === label);
+      
+      const getValue = (label: string, offset: number = 1 ) => {
+        const index = data.List.Fields.findIndex(field => field.Label === label) + offset;
         return index !== -1 ? riderData[index] : '';
+      };
+
+      const getValueByLabelAndOccurrence = (label: string, occurrence = 0, offset = 1) => {
+        const allIndices = data.List.Fields
+          .map((field, index) => ({ label: field.Label, index }))
+          .filter(field => field.label === label)
+          .map(field => field.index);
+
+        if (allIndices.length > occurrence) {
+          return riderData[allIndices[occurrence] + offset] ?? '';
+        }
+        return '';
       };
 
       return {
         bib: getValue('Bib'),
-        name: getValue('RIDERNAME'),
+        name: getValue('RIDER NAME', 2),
         nationality: getValue('FLAG'),
-        horse: getValue('HORSENAME'),
-        rank: getValue('Mainrank'),
+        horse: getValue('HORSE NAME'),
+        rank: getValue('Main rank'),
         totalTime: getValue('RideTime'),
         phases: [
           {
@@ -135,7 +149,9 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             loopTime: getValue('LoopTime'),
             speed: getValue('LoopSpeed'),
             rank: getValue('Rank'),
-            gap: getValue('Start')
+            gap: getValue('Start'),
+            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 0) === 'yes',
+            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 0) === 'yes' &&  getValue('Arrival') == "")
           },
           {
             phase: '2',
@@ -144,7 +160,9 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             loopTime: getValue('LoopTime'),
             speed: getValue('LoopSpeed'),
             rank: getValue('Rank'),
-            gap: getValue('Start')
+            gap: getValue('Start'),
+            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 1) === 'yes',
+            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 1) === 'yes' &&  getValue('Arrival') == "")
           },
           {
             phase: '3',
@@ -153,7 +171,9 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             loopTime: getValue('LoopTime'),
             speed: getValue('LoopSpeed'),
             rank: getValue('Rank'),
-            gap: getValue('Start')
+            gap: getValue('Start'),
+            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 2) === 'yes',
+            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 2) === 'yes' &&  getValue('Arrival') == "")
           }
         ],
         veterinary: [
@@ -184,6 +204,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
         ]
       };
     });
+    console.log("riders", riders)
     setProcessedRiders(riders);
   };
 
@@ -308,7 +329,7 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
     if (position <= 3) {
       return (
         <div className={`flex items-center space-x-1 ${getPositionColor(position)}`}>
-          <Trophy className="w-5 h-5" />
+          {/* <Trophy className="w-5 h-5" /> */}
           <span className="font-bold text-lg">{position}</span>
         </div>
       );
@@ -331,10 +352,12 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
+              {/* 
               <div className="text-center">
                 <div className="text-xs text-gray-500 dark:text-gray-400">BIB</div>
                 <span className="text-lg font-bold text-gray-700 dark:text-gray-300">#{rider.bib}</span>
               </div>
+               */}
               <div className="text-center">
                 <div className="text-xs text-gray-500 dark:text-gray-400">POS</div>
                 {getPositionBadge(position)}
@@ -347,7 +370,19 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
                 <h4 className="font-bold text-gray-900 dark:text-white">{rider.name}</h4>
                 <span className="text-sm text-gray-600 dark:text-gray-400">({rider.nationality})</span>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">{rider.horse}</p>
+              
+
+              <div className="flex items-center space-x-2 mb-1">
+
+                {
+                  rider.phases.map((phase, idx) => {
+                    if (phase.ready4nextphase ) return <CheckCircle className="w-4 h-4"  color="green" />;
+                    if (phase.phaseInProgress) return <Loader className="w-4 h-4" color="orange" />;
+                    return <Circle className="w-4 h-4" color="gray" />;
+                  })
+                }
+                <p id="horse name" className="me-2 text-sm text-gray-600 dark:text-gray-400 font-medium">{rider.horse}</p>
+              </div>
             </div>
           </div>
           

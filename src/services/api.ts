@@ -173,10 +173,10 @@ export const fetchCategories = async (): Promise<Category[]> => {
 };
 
 export const fetchLiveData = async (apiUrl: string): Promise<LiveData | null> => {
+  // Return mock data for development/demo
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return getMockLiveData();
   if (!apiUrl || apiUrl === 'mock') {
-    // Return mock data for development/demo
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return getMockLiveData();
   }
   
   try {
