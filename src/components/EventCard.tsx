@@ -64,7 +64,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             </div>
             <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
               <Clock className="w-4 h-4" />
-              <span className="text-sm">{new Date(event.startTime).toLocaleTimeString()}</span>
+              <span className="text-sm"> { new Date(event.startTime).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false }) }</span>
             </div>
           </div>
           

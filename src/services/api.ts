@@ -9,6 +9,12 @@ export const fetchFutureEvents = async (): Promise<any> => {
   return getMockExampleEvents();
 };
 
+// API endpoints for event IDs
+export const fetchEventIDs = async (): Promise<any> => {
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return getMockEventIDs();
+};
+
 export const fetchResultsInfo = async (): Promise<any> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   return getMockInfoResults();
@@ -190,6 +196,11 @@ export const fetchLiveData = async (apiUrl: string): Promise<LiveData | null> =>
   }
 };
 
+const getMockEventIDs = (): string[] => [
+  "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
+  "340011","340420","340501","341453","341520","341665","342379","342379","342741","343452","343526",
+  "343879","343880","343882","342379","345604","349041"
+];
 const getMockLiveData = (): LiveData => example_live_event as LiveData;
 const getMockInfoResults = (): any => api_example_results_info;
 const getMockExampleEvents = (): any => api_example_future_events;
@@ -199,3 +210,4 @@ export const fetchRidersByCategory = async (eventId: string, categoryId: string)
   await new Promise(resolve => setTimeout(resolve, 400));
   return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
 };
+

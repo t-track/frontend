@@ -16,18 +16,36 @@ interface ProcessedRider {
   totalTime: string;
   phases: Array<{
     phase: string;
-    startTime: string;
-    arrival: string;
-    loopTime: string;
-    speed: string;
-    rank: string;
     gap: string;
+    phaseKm: string;
+    startPhase: string;
+    arrival: string;
+    loopSpeed: string;
+    loopTime: string;
+    inTime: string;
+    recoveryTime: string;
+    phaseSpeed: string;
+    rideTime: string;
+    rideSpeed: string;
+    rank: string;
+    ready4nextphase: Boolean;
+    phaseInProgress: Boolean;
   }>;
   veterinary: Array<{
     phase: string;
+    recoveryTimeVet: string;
     heartRate: string;
-    recovery: string;
-    status: string;
+    recIndex: string;
+    respiration: string;
+    mucous: string;
+    capRefill: string;
+    skin: string;
+    gutSound: string;
+    girthBackWhiters: string;
+    muscleTone: string;
+    gait: string;
+    veterinary: string;
+    RI: string;
   }>;
 }
 
@@ -117,17 +135,11 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
   const processLiveData = (data: LiveData) => {
     const riders: ProcessedRider[] = data.Data.map((riderData) => {
       
-      const getValue = (label: string, offset: number = 1 ) => {
-        const index = data.List.Fields.findIndex(field => field.Label === label) + offset;
-        return index !== -1 ? riderData[index] : '';
-      };
-
-      const getValueByLabelAndOccurrence = (label: string, occurrence = 0, offset = 1) => {
+      const getValue = (label: string, occurrence = 0, offset: number = 1 ) => {
         const allIndices = data.List.Fields
           .map((field, index) => ({ label: field.Label, index }))
           .filter(field => field.label === label)
           .map(field => field.index);
-
         if (allIndices.length > occurrence) {
           return riderData[allIndices[occurrence] + offset] ?? '';
         }
@@ -135,95 +147,142 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
       };
 
       return {
-        bib: getValue('Bib'),
-        name: getValue('RIDER NAME', 2),
+        bib: getValue('Bib',0,-1),
+        name: getValue('RIDER NAME', 0, 2).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
         nationality: getValue('FLAG'),
         horse: getValue('HORSE NAME'),
         rank: getValue('Main rank'),
-        totalTime: getValue('RideTime'),
+        totalTime: getValue('Ride Time'),
         phases: [
           {
             phase: '1',
-            startTime: getValue('Startphase'),
-            arrival: getValue('Arrival'),
-            loopTime: getValue('LoopTime'),
-            speed: getValue('LoopSpeed'),
-            rank: getValue('Rank'),
-            gap: getValue('Start'),
-            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 0) === 'yes',
-            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 0) === 'yes' &&  getValue('Arrival') == "")
+            gap: getValue('Start',0),
+            phaseKm: getValue('Phase Km',0 ), // ??
+            arrival: getValue('Arrival',0),
+            loopSpeed: getValue('Loop Speed',0),
+            loopTime: getValue('Loop Time',0),
+            inTime: getValue('In Time',0),
+            recoveryTime: getValue('Recovery Time',0),
+            phaseSpeed: getValue('Phase Speed',0),
+            rideTime: getValue('Ride Time',0),
+            rideSpeed: getValue('Ride Speed',0),
+            rank: getValue('Rank',0),
+            startPhase: getValue('Start phase',0),
+            ready4nextphase: (getValue('Ready to next phase', 0) === 'yes'),
+            phaseInProgress: (getValue('Ready to next phase', 0) === '' ),
+            estimatedTimeArrival: (getValue('Extimated time arrival',0)),
+            estimatedLoopTime: (getValue('Extimated loop time',0))
           },
           {
             phase: '2',
-            startTime: getValue('Startphase'),
-            arrival: getValue('Arrival'),
-            loopTime: getValue('LoopTime'),
-            speed: getValue('LoopSpeed'),
-            rank: getValue('Rank'),
-            gap: getValue('Start'),
-            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 1) === 'yes',
-            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 1) === 'yes' &&  getValue('Arrival') == "")
+            gap: getValue('Start',1,0),
+            phaseKm: getValue('Phase Km',1,0),
+            startPhase: getValue('Start phase',1,0),
+            arrival: getValue('Arrival',1,0),
+            loopSpeed: getValue('Loop Speed',1,0),
+            loopTime: getValue('Loop Time',1,0),
+            inTime: getValue('In Time',1,0),
+            recoveryTime: getValue('Recovery Time',1,0),
+            phaseSpeed: getValue('Phase Speed',1,0),
+            rideTime: getValue('Ride Time',1,0),
+            rideSpeed: getValue('Ride Speed',1,0),
+            rank: getValue('Rank',1,0),
+            ready4nextphase: getValue('Ready to next phase', 1,0) === 'yes',
+            phaseInProgress: (getValue('Ready to next phase', 1,0) === '' ),
+            estimatedTimeArrival: (getValue('Extimated time arrival',1,0)),
+            estimatedLoopTime: (getValue('Extimated loop time',1,0))
           },
           {
             phase: '3',
-            startTime: getValue('Startphase'),
-            arrival: getValue('Arrival'),
-            loopTime: getValue('LoopTime'),
-            speed: getValue('LoopSpeed'),
-            rank: getValue('Rank'),
-            gap: getValue('Start'),
-            ready4nextphase: getValueByLabelAndOccurrence('Ready to next phase', 2) === 'yes',
-            phaseInProgress: (getValueByLabelAndOccurrence('Ready to next phase', 2) === 'yes' &&  getValue('Arrival') == "")
+            gap: getValue('Start',2,-1),
+            phaseKm: getValue('Phase Km',2,-1),
+            startPhase: getValue('Start phase',2,-1),
+            arrival: getValue('Arrival',2,-1),
+            loopSpeed: getValue('Loop Speed',2,-1),
+            loopTime: getValue('Loop Time',2,-1),
+            inTime: getValue('In Time',2,-1),
+            recoveryTime: getValue('Recovery Time',2,-1),
+            phaseSpeed: getValue('Phase Speed',2,-1),
+            rideTime: getValue('Ride Time',2,-1),
+            rideSpeed: getValue('Ride Speed',2,-1),
+            rank: getValue('Rank',2,-1),
+            ready4nextphase: getValue('Ready to next phase', 2,-1) === 'yes',
+            phaseInProgress: (getValue('Ready to next phase', 2,-1) === '' ),
+            estimatedTimeArrival: (getValue('Extimated time arrival',2,-1)), // used for the loading bar
+            estimatedLoopTime: (getValue('Extimated loop time',2,-1))
           }
         ],
         veterinary: [
           {
             phase: 'PRE',
-            heartRate: getValue('HeartRate'),
-            recovery: getValue('RecoveryTimeVet'),
-            status: getValue('Veterinary')
+            recoveryTimeVet: getValue( 'Recovery Time Vet' , 0 , -4 ) ,
+            heartRate: getValue('Heart Rate',0, -4 ),
+            recIndex: getValue('Rec. Index',0, -4 ),
+            respiration: getValue('Resp.',0, -4 ),
+            mucous: getValue('Mucous',0, -4 ),
+            capRefill: getValue('Cap. Refill',0, -4 ),
+            skin: getValue('Skin',0, -4 ),
+            gutSound: getValue('Gut Sounds',0, -4 ),
+            girthBackWhiters: getValue('Girth Back Whiters',0, -4 ),
+            muscleTone: getValue('Muscle Tone',0, -4 ),
+            gait: getValue('Gait',0, -4 ),
+            veterinary: getValue('Veterinary',0, -4 ),
+            RI: getValue('R.I.',0, -4 )
+            
           },
           {
             phase: '1',
-            heartRate: getValue('HeartRate'),
-            recovery: getValue('RecoveryTimeVet'),
-            status: getValue('Veterinary')
+            recoveryTimeVet: getValue( 'Recovery Time Vet' , 1 , -7),
+            heartRate: getValue('Heart Rate',1, -7 ),
+            recIndex: getValue('Rec. Index',1, -7 ),
+            respiration: getValue('Resp.',1, -7 ),
+            mucous: getValue('Mucous',1, -7 ),
+            capRefill: getValue('Cap. Refill',1, -7 ),
+            skin: getValue('Skin',1, -7 ),
+            gutSound: getValue('Gut Sounds',1, -7 ),
+            girthBackWhiters: getValue('Girth Back Whiters',1, -7 ),
+            muscleTone: getValue('Muscle Tone',1, -7 ),
+            gait: getValue('Gait', 1, -7 ),
+            veterinary: getValue('Veterinary',1 , -7 ),
+            RI: getValue('R.I.', 1 , -7 )
           },
           {
             phase: '2',
-            heartRate: getValue('HeartRate'),
-            recovery: getValue('RecoveryTimeVet'),
-            status: getValue('Veterinary')
+            recoveryTimeVet: getValue( 'Recovery Time Vet' , 2 , 3),
+            heartRate: getValue('Heart Rate', 2, 3 ),
+            recIndex: getValue('Rec. Index', 2, 3 ),
+            respiration: getValue('Resp.', 2, 3 ),
+            mucous: getValue('Mucous', 2, 3 ),
+            capRefill: getValue('Cap. Refill', 2, 3 ),
+            skin: getValue('Skin', 2, 3 ),
+            gutSound: getValue('Gut Sounds', 2, 3 ),
+            girthBackWhiters: getValue('Girth Back Whiters', 2, 3 ),
+            muscleTone: getValue('Muscle Tone', 2, 3 ),
+            gait: getValue('Gait', 2, 3 ),
+            veterinary: getValue('Veterinary', 2, 3 ),
+            RI: getValue('R.I.', 2, 3 )
           },
           {
             phase: '3',
-            heartRate: getValue('HeartRate'),
-            recovery: getValue('RecoveryTimeVet'),
-            status: getValue('Veterinary')
+            heartRate: getValue('Heart Rate', 3, 13 ),
+            recIndex: getValue('Rec. Index', 3, 13 ),
+            respiration: getValue('Resp.', 3, 13 ),
+            mucous: getValue('Mucous', 3, 13 ),
+            capRefill: getValue('Cap. Refill', 3, 13 ),
+            skin: getValue('Skin', 3, 13 ),
+            gutSound: getValue('Gut Sounds', 3, 13 ),
+            girthBackWhiters: getValue('Girth Back Whiters', 3, 13 ),
+            muscleTone: getValue('Muscle Tone', 3, 13 ),
+            gait: getValue('Gait', 3, 13 ),
+            veterinary: getValue('Veterinary', 3, 13 ),
+            RI: getValue('R.I.', 3, 13 ),
           }
         ]
       };
     });
-    console.log("riders", riders)
+    // console.log("riders", riders)
     setProcessedRiders(riders);
   };
-
-  
-
-  if (loading) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -256,9 +315,15 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             <p className="text-emerald-100 text-sm">{processedRiders.length} riders competing</p>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-emerald-100">
-              <RefreshCw className="w-4 h-4" />
-              <span className="text-sm">Next update: {countdown}s</span>
+            <div className="flex flex-col items-center justify-center space-x-2 text-emerald-100">
+              {loading ? <>
+                <RefreshCw className="w-4 h-4 text-emerald-500 animate-spin" />
+                <p className="text-sm">Loading...</p>
+              </>:<>
+                <RefreshCw className="w-4 h-4" />
+                <p className="text-sm">Next update:</p>
+                <p className="text-sm">{countdown}s</p>
+              </>}
             </div>
             <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
             <span className="text-sm">LIVE</span>
@@ -302,7 +367,8 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
   );
 };
 
-const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
+const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
+// const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
   const [expanded, setExpanded] = useState(false);
   
   const position = parseInt(rider.rank) || 0;
@@ -326,16 +392,17 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
   };
 
   const getPositionBadge = (position: number) => {
+    const key =  rider.bib +  'Position' + rider.name.replace(/[^a-zA-Z0-9]/g, '');
     if (position <= 3) {
       return (
-        <div className={`flex items-center space-x-1 ${getPositionColor(position)}`}>
+        <div key={key} className={`flex items-center space-x-1 ${getPositionColor(position)}`}>
           {/* <Trophy className="w-5 h-5" /> */}
           <span className="font-bold text-lg">{position}</span>
         </div>
       );
     }
     return (
-      <div className="flex items-center space-x-1 text-gray-600 dark:text-gray-400">
+      <div key={key} className="flex items-center space-x-1 text-gray-600 dark:text-gray-400">
         <span className="font-bold text-lg">{position}</span>
       </div>
     );
@@ -365,46 +432,55 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
             </div>
             
             <div className="flex-1">
+
               <div className="flex items-center space-x-2 mb-1">
                 <Flag className="w-4 h-4 text-gray-400" />
-                <h4 className="font-bold text-gray-900 dark:text-white">{rider.name}</h4>
+                <h4 className="font-bold text-gray-900 dark:text-white font-upper ">{rider.name}</h4>
+              </div>
+              
+              <p id="horse name" className="text-sm text-gray-600 dark:text-gray-400 font-medium">{rider.horse}</p>
+              
+              <div className="flex items-center space-x-2 mb-1">
+                <span className="text-sm text-gray-600 dark:text-gray-400">{rider.bib}</span>
                 <span className="text-sm text-gray-600 dark:text-gray-400">({rider.nationality})</span>
               </div>
               
-
-              <div className="flex items-center space-x-2 mb-1">
-
-                {
-                  rider.phases.map((phase, idx) => {
-                    if (phase.ready4nextphase ) return <CheckCircle className="w-4 h-4"  color="green" />;
-                    if (phase.phaseInProgress) return <Loader className="w-4 h-4" color="orange" />;
-                    return <Circle className="w-4 h-4" color="gray" />;
-                  })
-                }
-                <p id="horse name" className="me-2 text-sm text-gray-600 dark:text-gray-400 font-medium">{rider.horse}</p>
-              </div>
             </div>
           </div>
           
           <div className="flex items-center space-x-6">
-            <div className="text-right min-w-0">
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">GAP</div>
-              <div className={`text-sm font-semibold ${getGapColor(gap)}`}>
-                {getGapDisplay(gap)}
-              </div>
+            <div className="text-center min-w-0">
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">PHASE</div>
+              <div key={rider.bib + 'phaseMap' + rider.name.replace(/[^a-zA-Z0-9]/g, '')} className="flex items-center space-x-1">
+                  {
+                    rider.phases.map((phase, idx) => {
+                      const key = 'phase'+ idx
+                      if (phase.ready4nextphase ) return <CheckCircle key={key} className="w-4 h-4"  color="green" />;
+                      if (phase.phaseInProgress) return <Loader key={key} className="w-4 h-4" color="orange" />;
+                      return <Circle key={key} className="w-4 h-4" color="gray" />;
+                    })
+                  }
+                </div>
             </div>
+
+             
+
             
             <div className="text-right min-w-0">
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">TIME</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">STARTED</div>
               <div className="flex items-center space-x-1">
                 <Clock className="w-4 h-4 text-gray-400" />
                 <span className="text-sm font-mono font-semibold text-gray-900 dark:text-white">
-                  {rider.totalTime || '--:--:--'}
+                  { rider.phases.map((phase, idx) => {
+                    if (phase.phaseInProgress || rider.phases.length == idx + 1){
+                      return phase.startPhase;
+                    }
+                  }) || rider.phases[2].startPhase }
                 </span>
               </div>
             </div>
             
-            <div className="text-right min-w-0">
+            {/* <div className="text-right min-w-0">
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">HR</div>
               <div className="flex items-center space-x-1">
                 <Heart className="w-4 h-4 text-red-500" />
@@ -412,13 +488,21 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
                   {rider.veterinary[0]?.heartRate || '--'}
                 </span>
               </div>
-            </div>
+            </div> */}
             
             <div className="text-gray-400">
               {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
             </div>
           </div>
         </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{
+                width: `${Math.min((1 / 2) * 100, 100)}%`,
+              }}
+            />
+          </div>
       </div>
 
       {expanded && (
@@ -431,7 +515,7 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
               </h5>
               <div className="space-y-3">
                 {rider.phases.map((phase, phaseIndex) => (
-                  <div key={phaseIndex} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                  <div key={'phase'+phaseIndex} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-emerald-600 dark:text-emerald-400">Phase {phase.phase}</span>
                       <span className="text-sm font-mono bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">
@@ -439,9 +523,9 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
-                      <div>Start: {phase.startTime}</div>
+                      <div>Start: {phase.startPhase}</div>
                       <div>Arrival: {phase.arrival}</div>
-                      <div>Speed: {phase.speed} km/h</div>
+                      <div>Speed: {phase.phaseSpeed} km/h</div>
                       <div>Rank: {phase.rank}</div>
                     </div>
                   </div>
@@ -456,7 +540,7 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
               </h5>
               <div className="space-y-3">
                 {rider.veterinary.map((vet, vetIndex) => (
-                  <div key={vetIndex} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                  <div key={'vertindex'+vetIndex} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-red-600 dark:text-red-400">Check {vet.phase}</span>
                       <div className="flex items-center space-x-2">
@@ -465,9 +549,36 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
-                      <div>Recovery: {vet.recovery}</div>
-                      <div className={`font-semibold ${vet.status === 'Ok' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        Status: {vet.status}
+                      <div>Recovery: {vet.recIndex}</div>
+                      <div className='font-semibold'>
+                        Rec. Index: {vet.RI}
+                      </div>
+                      <div className='font-semibold'>
+                        Respiration: {vet.respiration}
+                      </div>
+                      <div className='font-semibold'>
+                        Mucous: {vet.mucous}
+                      </div>
+                      <div className='font-semibold'>
+                        Cap Refil: {vet.capRefill}
+                      </div>
+                      <div className={`font-semibold ${vet.skin === '1' ? '' : 'text-red-600 dark:text-red-400'}`}>
+                        Skin: {vet.skin}
+                      </div>
+                      <div className={`font-semibold ${vet.gutSound === 'A' ? '' : 'text-red-600 dark:text-red-400'}`}>
+                        Gut Sound: {vet.gutSound}
+                      </div>
+                      <div className={`font-semibold ${vet.girthBackWhiters === 'A' ? '' : 'text-red-600 dark:text-red-400'}`}>
+                        Girth back Whiters: {vet.girthBackWhiters}
+                      </div>
+                      <div className={`font-semibold ${vet.muscleTone === 'A' ? '' : 'text-red-600 dark:text-red-400'}`}>
+                        Muscle Tone: {vet.muscleTone}
+                      </div>
+                      <div className={`font-semibold ${vet.gait === 'A' ? '' : 'text-red-600 dark:text-red-400'}`}>
+                        Gait: {vet.gait}
+                      </div>
+                      <div className='font-semibold'>
+                        Vet: {vet.veterinary}
                       </div>
                     </div>
                   </div>
@@ -479,6 +590,6 @@ const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
       )}
     </div>
   );
-};
+});
 
 export default LiveScoreboard;
