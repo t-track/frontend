@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Clock, Heart, Activity, Flag, ChevronDown, ChevronUp, RefreshCw, CheckCircle, Loader, Circle } from 'lucide-react';
+import { Trophy, Clock, Heart, Activity, Flag, RefreshCw, CheckCircle, Loader, Circle, X, Stethoscope, Timer } from 'lucide-react';
 import { LiveData } from '../types';
 import { fetchLiveData } from '../services/api';
 
@@ -315,18 +315,15 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             <p className="text-emerald-100 text-sm">{processedRiders.length} riders competing</p>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex flex-col items-center justify-center space-x-2 text-emerald-100">
-              {loading ? <>
-                <RefreshCw className="w-4 h-4 text-emerald-500 animate-spin" />
-                <p className="text-sm">Loading...</p>
-              </>:<>
-                <RefreshCw className="w-4 h-4" />
-                <p className="text-sm">Next update:</p>
-                <p className="text-sm">{countdown}s</p>
-              </>}
-            </div>
+            
             <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
             <span className="text-sm">LIVE</span>
+
+            <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
+              <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2" fill="none" className="opacity-30" />
+              <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray={`${2 * Math.PI * 14}`} strokeDashoffset={`${2 * Math.PI * 14 * (1 - (30 - countdown) / 30)}`} className="transition-all duration-1000 ease-linear" />
+            </svg>
+
           </div>
         </div>
       </div>
@@ -368,8 +365,8 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
 };
 
 const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
-// const RiderRow: React.FC<{ rider: ProcessedRider }> = ({ rider }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [showVetModal, setShowVetModal] = useState(false);
+  const [showPhaseModal, setShowPhaseModal] = useState(false);
   
   const position = parseInt(rider.rank) || 0;
   const gap = rider.phases[0]?.gap || '';
@@ -409,13 +406,11 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
   };
 
   return (
-    <div className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
-      position <= 3 ? 'bg-gradient-to-r from-yellow-50 to-transparent dark:from-yellow-900/20' : ''
-    }`}>
-      <div
-        className="p-4 cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
+    <>
+      <div className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+        position <= 3 ? 'bg-gradient-to-r from-yellow-50 to-transparent dark:from-yellow-900/20' : ''
+      }`}>
+        <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
@@ -449,27 +444,9 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
           </div>
           
           <div className="flex items-center space-x-6">
-            {/* <div className="text-center min-w-0">
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">PHASE</div>
-              <div key={rider.bib + 'phaseMap' + rider.name.replace(/[^a-zA-Z0-9]/g, '')} className="flex items-center space-x-1">
-                  {
-                    rider.phases.map((phase, idx) => {
-                      const key = 'phase'+ idx
-                      if (phase.ready4nextphase ) return <CheckCircle key={key} className="w-4 h-4"  color="green" />;
-                      if (phase.phaseInProgress) return <Loader key={key} className="w-4 h-4" color="orange" />;
-                      return <Circle key={key} className="w-4 h-4" color="gray" />;
-                    })
-                  }
-                </div>
-            </div> */}
-
-             
-
-            
             <div className="text-right min-w-0">
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">STARTED</div>
               <div className="flex items-center space-x-1">
-                {/* <Clock className="w-4 h-4 text-gray-400" /> */}
                 <span className="text-sm font-mono font-semibold text-gray-900 dark:text-white">
                   { rider.phases.map((phase, idx) => {
                     if (phase.phaseInProgress || rider.phases.length == idx + 1){
@@ -480,115 +457,309 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
               </div>
             </div>
             
-            {/* <div className="text-right min-w-0">
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">HR</div>
-              <div className="flex items-center space-x-1">
-                <Heart className="w-4 h-4 text-red-500" />
-                <span className="text-sm font-semibold">
-                  {rider.veterinary[0]?.heartRate || '--'}
-                </span>
-              </div>
-            </div> */}
-            
-            <div className="text-gray-400">
-              {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            <div className="items-center">
+              <button
+                onClick={() => setShowPhaseModal(true)}
+                className="flex items-center space-x-1 mt-1 px-3 py-1.5 border border-blue-300 text-blue-600 hover:bg-blue-50 text-xs rounded-lg transition-colors bg-transparent"
+              >
+                <Timer className="w-3 h-3" />
+              </button>
+              <button
+                onClick={() => setShowVetModal(true)}
+                className="flex items-center space-x-1 mt-1 px-3 py-1.5 border border-red-400 text-red-600 hover:bg-red-50 text-xs rounded-lg transition-colors bg-transparent"
+              >
+                <Stethoscope className="w-3 h-3" />
+              </button>
             </div>
           </div>
         </div>
         <PhaseProgressBar phases={rider.phases} />
       </div>
+      </div>
 
-      {expanded && (
-        <div className="px-4 pb-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h5 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
-                <Activity className="w-4 h-4 mr-2" />
-                Phase Results
-              </h5>
-              <div className="space-y-3">
+      {/* Phase Results Modal */}
+      {showPhaseModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+                <Timer className="w-5 h-5 mr-2 text-blue-600" />
+                Phase Results - {rider.name}
+              </h3>
+              <button
+                onClick={() => setShowPhaseModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="space-y-4">
                 {rider.phases.map((phase, phaseIndex) => (
-                  <div key={'phase'+phaseIndex} className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">Phase {phase.phase}</span>
-                      <span className="text-sm font-mono bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">
+                  <div key={'modal-phase'+phaseIndex} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-lg">Phase {phase.phase}</span>
+                      <span className="text-lg font-mono bg-gray-100 dark:bg-gray-600 px-3 py-1 rounded">
                         {phase.loopTime}
                       </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-400">
-                      <div>Start: {phase.startPhase}</div>
-                      <div>Arrival: {phase.arrival}</div>
-                      <div>Speed: {phase.phaseSpeed} km/h</div>
-                      <div>Rank: {phase.rank}</div>
+                    <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Start:</span>
+                        <span className="font-mono">{phase.startPhase}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Arrival:</span>
+                        <span className="font-mono">{phase.arrival}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">In Time:</span>
+                        <span className="font-mono">{phase.inTime}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Recovery:</span>
+                        <span className="font-mono">{phase.recoveryTime}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Phase Speed:</span>
+                        <span className="font-mono">{phase.phaseSpeed} km/h</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Rank:</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">{phase.rank}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            
-            <div>
-              <h5 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
-                <Heart className="w-4 h-4 mr-2 text-red-500" />
-                Veterinary Checks
-              </h5>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-xs">
-                  <thead>
-                    <tr className="bg-gray-100 dark:bg-gray-600">
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Phase</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">HR</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">RI</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Resp</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Mucous</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Cap</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Skin</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Gut</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Girth</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Muscle</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Gait</th>
-                      <th className="px-2 py-1 text-left font-medium text-gray-900 dark:text-white">Vet</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                    {rider.veterinary.map((vet, vetIndex) => (
-                      <tr key={'vetindex'+vetIndex} className="hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
-                        <td className="px-2 py-1 font-medium text-red-600 dark:text-red-400">{vet.phase}</td>
-                        <td className="px-2 py-1 text-center">
-                          <div className="flex items-center justify-center space-x-1">
-                            <Heart className="w-3 h-3 text-red-500" />
-                            <span className="font-mono">{vet.heartRate}</span>
-                          </div>
-                        </td>
-                        <td className="px-2 py-1 text-center font-medium">{vet.RI}</td>
-                        <td className="px-2 py-1 text-center">{vet.respiration}</td>
-                        <td className="px-2 py-1 text-center">{vet.mucous}</td>
-                        <td className="px-2 py-1 text-center">{vet.capRefill}</td>
-                        <td className={`px-2 py-1 text-center font-medium ${vet.skin === '1' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {vet.skin}
-                        </td>
-                        <td className={`px-2 py-1 text-center font-medium ${vet.gutSound === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {vet.gutSound}
-                        </td>
-                        <td className={`px-2 py-1 text-center font-medium ${vet.girthBackWhiters === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {vet.girthBackWhiters}
-                        </td>
-                        <td className={`px-2 py-1 text-center font-medium ${vet.muscleTone === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {vet.muscleTone}
-                        </td>
-                        <td className={`px-2 py-1 text-center font-medium ${vet.gait === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                          {vet.gait}
-                        </td>
-                        <td className="px-2 py-1 text-center">{vet.veterinary}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Veterinary Modal */}
+      {showVetModal && (
+        <>
+          <div className="hidden lg:block fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+                  <Stethoscope className="w-5 h-5 mr-2 text-red-600" />
+                  Veterinary Checks - {rider.name}
+                </h3>
+                <button
+                  onClick={() => setShowVetModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-4">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100 dark:bg-gray-700">
+                        <th className="px-3 py-2 text-left font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Phase</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">HR</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">RI</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Resp</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Mucous</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Cap</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Skin</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Gut</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Girth</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Muscle</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Gait</th>
+                        <th className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">Vet</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
+                      {rider.veterinary.map((vet, vetIndex) => (
+                        <tr key={'modal-vet'+vetIndex} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="px-3 py-2 font-semibold text-red-600 dark:text-red-400 border border-gray-300 dark:border-gray-600">{vet.phase}</td>
+                          <td className="px-3 py-2 text-center border border-gray-300 dark:border-gray-600">
+                            <div className="flex items-center justify-center space-x-1 text-gray-900 dark:text-white">
+                              <Heart className="w-4 h-4 text-red-500" />
+                              <span className="font-mono font-semibold">{vet.heartRate}</span>
+                            </div>
+                          </td>
+                          <td className="px-3 py-2 text-center font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">{vet.recIndex}</td>
+                          <td className="px-3 py-2 text-center text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">{vet.respiration}</td>
+                          <td className="px-3 py-2 text-center text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">{vet.mucous}</td>
+                          <td className="px-3 py-2 text-center text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">{vet.capRefill}</td>
+                          <td className={`px-3 py-2 text-center font-semibold border border-gray-300 dark:border-gray-600 ${vet.skin === '1' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.skin}
+                          </td>
+                          <td className={`px-3 py-2 text-center font-semibold border border-gray-300 dark:border-gray-600 ${vet.gutSound === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.gutSound}
+                          </td>
+                          <td className={`px-3 py-2 text-center font-semibold border border-gray-300 dark:border-gray-600 ${vet.girthBackWhiters === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.girthBackWhiters}
+                          </td>
+                          <td className={`px-3 py-2 text-center font-semibold border border-gray-300 dark:border-gray-600 ${vet.muscleTone === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.muscleTone}
+                          </td>
+                          <td className={`px-3 py-2 text-center font-semibold border border-gray-300 dark:border-gray-600 ${vet.gait === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.gait}
+                          </td>
+                          <td className="px-3 py-2 text-center text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">{vet.veterinary}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Mobile */}
+          <div className="block lg:hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+                  <Stethoscope className="w-5 h-5 mr-2 text-red-600" />
+                  Veterinary Checks - {rider.name}
+                </h3>
+                <button
+                  onClick={() => setShowVetModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-4">
+                <div className="overflow-x-auto w-full">
+                  <table className="min-w-max table-fixed border-collapse text-sm w-full">
+                    <thead>
+                      <tr className="bg-gray-100 dark:bg-gray-700">
+                        <th className="px-3 py-2 border text-left font-bold text-gray-800 dark:text-gray-200">Phase</th>
+                        {rider.veterinary.map((vet, idx) => (
+                          <th key={'phase-head-' + idx} className="px-3 py-2 border text-center font-bold text-red-600 dark:text-red-400">
+                            {vet.phase}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Heart Rate */}
+                      <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white flex items-center space-x-1">
+                          <span>HR</span>
+                        </td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'hr-' + idx} className="px-3 py-2 border text-center font-mono text-gray-800 dark:text-white">
+                            {vet.heartRate}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Recovery Index */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">RI</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'ri-' + idx} className="px-3 py-2 border text-center">
+                            {vet.recIndex}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Respiration */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Resp</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'resp-' + idx} className="px-3 py-2 border text-center">
+                            {vet.respiration}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Mucous */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Mucous</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'mucous-' + idx} className="px-3 py-2 border text-center">
+                            {vet.mucous}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Cap Refill */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Cap</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'cap-' + idx} className="px-3 py-2 border text-center">
+                            {vet.capRefill}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Skin */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Skin</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'skin-' + idx} className={`px-3 py-2 border text-center font-semibold ${vet.skin === '1' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.skin}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Gut Sound */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Gut</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'gut-' + idx} className={`px-3 py-2 border text-center font-semibold ${vet.gutSound === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.gutSound}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Girth */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Girth</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'girth-' + idx} className={`px-3 py-2 border text-center font-semibold ${vet.girthBackWhiters === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.girthBackWhiters}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Muscle Tone */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Muscle</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'muscle-' + idx} className={`px-3 py-2 border text-center font-semibold ${vet.muscleTone === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.muscleTone}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Gait */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Gait</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'gait-' + idx} className={`px-3 py-2 border text-center font-semibold ${vet.gait === 'A' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {vet.gait}
+                          </td>
+                        ))}
+                      </tr>
+
+                      {/* Vet */}
+                      <tr>
+                        <td className="px-3 py-2 border font-medium text-gray-800 dark:text-white">Vet</td>
+                        {rider.veterinary.map((vet, idx) => (
+                          <td key={'vet-' + idx} className="px-3 py-2 border text-center">
+                            {vet.veterinary}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 });
 
@@ -597,50 +768,60 @@ const PhaseProgressBar: React.FC<{ phases: any[] }> = ({ phases }) => {
   
   return (
     <div className="w-full mt-2">
-      <div className="flex w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 overflow-hidden">
+      <div className="flex items-center justify-between w-full">
         {phases.map((phase, index) => {
-          const segmentWidth = 100 / totalPhases;
-          let segmentProgress = 0;
-          
-          if (phase.ready4nextphase) {
-            segmentProgress = 100; // Phase completed
-          } else if (phase.phaseInProgress && phase.estimatedTimeArrival) {
-            // Calculate progress based on estimated time (mock calculation)
-            segmentProgress = 60; // Placeholder for in-progress phase
-          } else if (phase.phaseInProgress) {
-            segmentProgress = 30; // Just started
-          }
+          const isCompleted = phase.ready4nextphase;
+          const isInProgress = phase.phaseInProgress;
           
           return (
-            <div
+            <React.Fragment
               key={`phase-${index}`}
-              className="relative h-full border-r border-white dark:border-gray-600 last:border-r-0"
-              style={{ width: `${segmentWidth}%` }}
             >
+              {/* Progress bar segment */}
               <div
-                className={`h-full transition-all duration-500 ${
-                  phase.ready4nextphase 
+                className={`flex-1 h-2 mx-1 rounded-full transition-all duration-500 ${
+                  isCompleted 
                     ? 'bg-green-500' 
-                    : phase.phaseInProgress 
+                    : isInProgress 
                       ? 'bg-blue-500' 
                       : 'bg-gray-300 dark:bg-gray-600'
                 }`}
-                style={{ width: `${segmentProgress}%` }}
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-white drop-shadow-sm">
-                  {index + 1}
-                </span>
-              </div>
-            </div>
+              
+              {/* Circular phase indicator */}
+              {index < totalPhases  && (
+                <div className="relative">
+                  <div
+                    className={`w-6 h-6 rounded-full border-2 transition-all duration-500 flex items-center justify-center ${
+                      isCompleted
+                        ? 'bg-green-500 border-green-500'
+                        : isInProgress
+                          ? 'bg-blue-500 border-blue-500'
+                          : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+                    }`}
+                  >
+                    {isCompleted && (
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {isInProgress && !isCompleted && (
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                    )}
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
           );
         })}
       </div>
-      <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+      
+      {/* Phase labels */}
+      <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
         {phases.map((_, index) => (
-          <span key={`label-${index}`} className="text-center" style={{ width: `${100 / totalPhases}%` }}>
-            Phase {index + 1}
-          </span>
+          <div key={`label-${index}`} className="flex-1 text-center">
+            <span>Phase {index + 1}</span>
+          </div>
         ))}
       </div>
     </div>
