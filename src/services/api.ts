@@ -21,43 +21,283 @@ export const fetchResultsInfo = async (): Promise<any> => {
 };
 
 // Mock data for development
-const mockEvents: Event[] = [
+let mockEvents: Event[] = [
   {
     id: '1',
     name: 'Summer Sprint Race',
+    eventID: '340000',
     location: 'Tuscany Hills',
     startTime: '2024-12-15T08:00:00Z',
     endTime: '2024-12-15T16:00:00Z',
     subscriptionDeadline: '2024-12-10T23:59:59Z',
-    status: 'live',
-    categories: ['CEI3* 160', 'CEI3* 140'],
-    backgroundImage: 'https://images.pexels.com/photos/1996333/pexels-photo-1996333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Annual summer endurance race through the beautiful Tuscan countryside'
+    backgroundImage: 'https://images.pexels.com/photos/1996333/pexels-photo-1996333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
   },
   {
-    id: '2',
+    id: '27',
     name: 'Mountain Challenge',
+    eventID: '340001',
     location: 'Alpine Region',
     startTime: '2024-12-20T07:00:00Z',
     endTime: '2024-12-20T18:00:00Z',
     subscriptionDeadline: '2024-12-15T23:59:59Z',
-    status: 'upcoming',
-    categories: ['CEI2* 120', 'CEI1* 90'],
-    backgroundImage: 'https://images.pexels.com/photos/1996334/pexels-photo-1996334.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Challenging mountain endurance race with stunning alpine views'
+    backgroundImage: 'https://images.pexels.com/photos/1996334/pexels-photo-1996334.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
   },
   {
-    id: '3',
+    id: '26',
     name: 'Autumn Classic',
+    eventID: '340002',
     location: 'countryside',
     startTime: '2024-11-15T09:00:00Z',
     endTime: '2024-11-15T17:00:00Z',
     subscriptionDeadline: '2024-11-10T23:59:59Z',
-    status: 'finished',
-    categories: ['CEI3* 160'],
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    description: 'Classic autumn endurance race with beautiful fall scenery'
-  }
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '25',
+    name: 'Autumn Classic',
+    eventID: '340003',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '24',
+    name: 'Autumn Classic',
+    eventID: '340004',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '23',
+    name: 'Autumn Classic',
+    eventID: '340005',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '22',
+    name: 'Autumn Classic',
+    eventID: '340006',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '21',
+    name: 'Autumn Classic',
+    eventID: '340007',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '20',
+    name: 'Autumn Classic',
+    eventID: '340008',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '19',
+    name: 'Autumn Classic',
+    eventID: '340009',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '18',
+    name: 'Autumn Classic',
+    eventID: '340010',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '17',
+    name: 'Autumn Classic',
+    eventID: '340011',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '16',
+    name: 'Autumn Classic',
+    eventID: '340420',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '15',
+    name: 'Autumn Classic',
+    eventID: '340501',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '14',
+    name: 'Autumn Classic',
+    eventID: '341453',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '13',
+    name: 'Autumn Classic',
+    eventID: '341520',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '12',
+    name: 'Autumn Classic',
+    eventID: '341665',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '11',
+    name: 'Autumn Classic',
+    eventID: '342379',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '10',
+    name: 'Autumn Classic',
+    eventID: '342741',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '9',
+    name: 'Autumn Classic',
+    eventID: '343452',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '8',
+    name: 'Autumn Classic',
+    eventID: '343526',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '7',
+    name: 'Autumn Classic',
+    eventID: '343879',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '6',
+    name: 'Autumn Classic',
+    eventID: '343880',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '5',
+    name: 'Autumn Classic',
+    eventID: '343882',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '4',
+    name: 'Autumn Classic',
+    eventID: '342379',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '3',
+    name: 'Autumn Classic',
+    eventID: '345604',
+    location: 'countryside',
+    startTime: '2024-11-15T09:00:00Z',
+    endTime: '2024-11-15T17:00:00Z',
+    subscriptionDeadline: '2024-11-10T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+  {
+    id: '2',
+    name: 'Autumn Classic',
+    eventID: '349041',
+    location: 'countryside',
+    startTime: '2025-07-23T09:00:00Z',
+    endTime: '2025-07-23T17:00:00Z',
+    subscriptionDeadline: '2025-07-23T23:59:59Z',
+    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+  },
+];
+
+const getMockEventIDs = (): string[] => [
+  "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
+  "340011","340420","340501","341453","341520","341665","342379","342379","342741","343452","343526",
+  "343879","343880","343882","342379","345604","349041"
 ];
 
 const mockRiders: Rider[] = [
@@ -196,11 +436,7 @@ export const fetchLiveData = async (apiUrl: string): Promise<LiveData | null> =>
   }
 };
 
-const getMockEventIDs = (): string[] => [
-  "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
-  "340011","340420","340501","341453","341520","341665","342379","342379","342741","343452","343526",
-  "343879","343880","343882","342379","345604","349041"
-];
+
 const getMockLiveData = (): LiveData => example_live_event as LiveData;
 const getMockInfoResults = (): any => api_example_results_info;
 const getMockExampleEvents = (): any => api_example_future_events;
@@ -211,3 +447,97 @@ export const fetchRidersByCategory = async (eventId: string, categoryId: string)
   return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
 };
 
+export const createEvent = async (eventData: {
+  id: string;
+  name: string;
+  startTime: string;
+  backgroundImage: string;
+  location?: string;
+  categories?: string[];
+  description?: string;
+}): Promise<Event> => {
+  const newEvent: Event = {
+    id: eventData.id,
+    name: eventData.name,
+    location: eventData.location || 'TBD',
+    startTime: eventData.startTime,
+    endTime: new Date(new Date(eventData.startTime).getTime() + 8 * 60 * 60 * 1000).toISOString(), // 8 hours later
+    subscriptionDeadline: new Date(new Date(eventData.startTime).getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days before
+    backgroundImage: eventData.backgroundImage
+  };
+
+  // Add to custom events
+  mockEvents.push(newEvent);
+  
+  // Store in localStorage for persistence
+  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
+  
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return newEvent;
+};
+
+export const updateEvent = async (eventId: string, eventData: Partial<Event>): Promise<Event | null> => {
+  const eventIndex = mockEvents.findIndex(event => event.id === eventId);
+  
+  if (eventIndex === -1) {
+    throw new Error('Event not found');
+  }
+
+  // Update the event
+  mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...eventData };
+  
+  // Update localStorage
+  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
+  
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return mockEvents[eventIndex];
+};
+
+export const deleteEvent = async (eventId: string): Promise<boolean> => {
+  const eventIndex = mockEvents.findIndex(event => event.id === eventId);
+  
+  if (eventIndex === -1) {
+    return false;
+  }
+
+  mockEvents.splice(eventIndex, 1);
+  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
+  
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return true;
+};
+
+export const getMockEvents = (): Event[] => {
+  // Load from localStorage on first call
+  if (mockEvents.length === 0) {
+    const stored = localStorage.getItem('mockEvents');
+    if (stored) {
+      mockEvents = JSON.parse(stored);
+    }
+  }
+  return mockEvents;
+};
+
+// Available cover images
+export const getCoverImages = (): { url: string; name: string }[] => [
+  {
+    url: 'https://images.pexels.com/photos/1996333/pexels-photo-1996333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    name: 'Mountain Trail'
+  },
+  {
+    url: 'https://images.pexels.com/photos/1996334/pexels-photo-1996334.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    name: 'Forest Path'
+  },
+  {
+    url: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    name: 'Desert Landscape'
+  },
+  {
+    url: 'https://images.pexels.com/photos/1996327/pexels-photo-1996327.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    name: 'Countryside'
+  },
+  {
+    url: 'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    name: 'Coastal Trail'
+  }
+];

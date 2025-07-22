@@ -15,8 +15,11 @@ const Events: React.FC = () => {
     const loadEvents = async () => {
       try {
         const data = await fetchEvents();
-        setEvents(data);
-        setFilteredEvents(data);
+        const sortedEventsByStartTime = data.sort(
+          (a: Event, b: Event) =>  new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+        );
+        setEvents(sortedEventsByStartTime);
+        setFilteredEvents(sortedEventsByStartTime);
       } catch (error) {
         console.error('Error loading events:', error);
       } finally {
@@ -38,13 +41,15 @@ const Events: React.FC = () => {
     }
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(event => event.status === statusFilter);
+      filtered = filtered.filter(event => new Date(event.endTime) < new Date());
     }
 
     // Sort by date, with live events first
     filtered.sort((a, b) => {
-      if (a.status === 'live' && b.status !== 'live') return -1;
-      if (b.status === 'live' && a.status !== 'live') return 1;
+      const alive = new Date(a.endTime) < new Date() && new Date(a.startTime) < new Date()
+      const blive = new Date(b.endTime) < new Date() && new Date(b.startTime) < new Date()
+      if (alive && !blive) return -1;
+      if (blive && !alive) return 1;
       return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
     });
 

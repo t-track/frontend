@@ -1,19 +1,112 @@
 import React from 'react';
-import { Moon, Sun, ExternalLink, Smartphone, Monitor, Shield, User, LogOut } from 'lucide-react';
+import { Moon, Sun, ExternalLink, Smartphone, Monitor, Shield, User, LogOut, Plus, Edit, Trash2, Calendar, Image, MapPin, Type, Save, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
+import { createEvent, updateEvent, deleteEvent, getMockEvents, getCoverImages } from '../services/api';
+import { Event } from '../types';
 import LoginModal from '../components/Auth/LoginModal';
 
 const Settings: React.FC = () => {
   const { darkMode, toggleDarkMode, isPWA, liveApiUrl, setLiveApiUrl } = useApp();
   const { user, userProfile, logout, isAdmin } = useAuth();
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
+  const [customEvents, setCustomEvents] = React.useState<Event[]>([]);
+  const [showEventModal, setShowEventModal] = React.useState(false);
+  const [editingEvent, setEditingEvent] = React.useState<Event | null>(null);
+  const [eventForm, setEventForm] = React.useState({
+    id: '',
+    name: '',
+    startTime: '',
+    backgroundImage: '',
+    location: '',
+    description: ''
+  });
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    setCustomEvents(getMockEvents());
+  }, []);
+
+  const coverImages = getCoverImages();
 
   const handleLogout = async () => {
     try {
       await logout();
     } catch (error) {
       console.error('Error logging out:', error);
+    }
+  };
+
+  const openCreateModal = () => {
+    setEditingEvent(null);
+    setEventForm({
+      id: '',
+      name: '',
+      startTime: '',
+      backgroundImage: coverImages[0].url,
+      location: '',
+      description: ''
+    });
+    setShowEventModal(true);
+    setError('');
+  };
+
+  const openEditModal = (event: Event) => {
+    setEditingEvent(event);
+    setEventForm({
+      id: event.id,
+      name: event.name,
+      startTime: event.startTime.slice(0, 16), // Format for datetime-local input
+      backgroundImage: event.backgroundImage,
+      location: event.location,
+      description: ''
+    });
+    setError('');
+    setShowEventModal(true);
+  };
+
+  const handleSaveEvent = async () => {
+    if (!eventForm.id || !eventForm.name || !eventForm.startTime) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const eventData = {
+        ...eventForm,
+        startTime: new Date(eventForm.startTime).toISOString()
+      };
+
+      if (editingEvent) {
+        await updateEvent(editingEvent.id, eventData);
+      } else {
+        await createEvent(eventData);
+      }
+
+      // Refresh the events list
+      setCustomEvents(getMockEvents());
+      setShowEventModal(false);
+    } catch (err: any) {
+      setError(err.message || 'Failed to save event');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm('Are you sure you want to delete this event?')) {
+      return;
+    }
+
+    try {
+      await deleteEvent(eventId);
+      setCustomEvents(getMockEvents());
+    } catch (err: any) {
+      console.error('Failed to delete event:', err);
     }
   };
 
@@ -148,12 +241,79 @@ const Settings: React.FC = () => {
         </div>
         )}
 
+        {/* Event Management */}
+        {isAdmin && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Event Management</h2>
+              <button
+                onClick={openCreateModal}
+                className="flex items-center space-x-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Event</span>
+              </button>
+            </div>
+            
+            <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <span className="text-sm text-amber-800 dark:text-amber-200 font-medium">Administrator Only</span>
+              </div>
+            </div>
+
+            {customEvents.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No custom events created yet</p>
+                <p className="text-sm">Click "Create Event" to add your first event</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {customEvents.map((event) => (
+                  <div key={event.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div className="flex items-center space-x-4">
+                      <img
+                        src={event.backgroundImage}
+                        alt={event.name}
+                        className="w-16 h-10 object-cover rounded"
+                      />
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">{event.name}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                          <span>ID: {event.id}</span>
+                          <span>{new Date(event.startTime).toLocaleDateString()}</span>
+                          <span>{event.location}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => openEditModal(event)}
+                        className="p-2 text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteEvent(event.id)}
+                        className="p-2 text-red-600 hover:text-red-700 dark:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {!isAdmin && user && (
           <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 text-center">
             <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Administrator Access Required</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              API configuration settings are only available to administrators.
+              Event management and API configuration settings are only available to administrators.
             </p>
           </div>
         )}
@@ -184,6 +344,169 @@ const Settings: React.FC = () => {
       </div>
     </div>
       <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+
+      {/* Event Creation/Edit Modal */}
+      {showEventModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                {editingEvent ? 'Edit Event' : 'Create New Event'}
+              </h2>
+              <button
+                onClick={() => setShowEventModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {error && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                  <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
+              {/* Event ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Event ID *
+                </label>
+                <input
+                  type="text"
+                  value={eventForm.id}
+                  onChange={(e) => setEventForm({ ...eventForm, id: e.target.value })}
+                  disabled={!!editingEvent}
+                  placeholder="e.g., 340001"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-600"
+                />
+                {editingEvent && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Event ID cannot be changed</p>
+                )}
+              </div>
+
+              {/* Event Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Event Name *
+                </label>
+                <input
+                  type="text"
+                  value={eventForm.name}
+                  onChange={(e) => setEventForm({ ...eventForm, name: e.target.value })}
+                  placeholder="e.g., Summer Endurance Championship"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* Start Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Start Time *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={eventForm.startTime}
+                  onChange={(e) => setEventForm({ ...eventForm, startTime: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={eventForm.location}
+                  onChange={(e) => setEventForm({ ...eventForm, location: e.target.value })}
+                  placeholder="e.g., Tuscany Hills, Italy"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* Cover Image Selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Cover Image
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {coverImages.map((image) => (
+                    <button
+                      key={image.url}
+                      type="button"
+                      onClick={() => setEventForm({ ...eventForm, backgroundImage: image.url })}
+                      className={`relative rounded-lg overflow-hidden border-2 transition-all ${
+                        eventForm.backgroundImage === image.url
+                          ? 'border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800'
+                          : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                      }`}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.name}
+                        className="w-full h-20 object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                        <span className="text-white text-xs p-2 font-medium">{image.name}</span>
+                      </div>
+                      {eventForm.backgroundImage === image.url && (
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={eventForm.description}
+                  onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
+                  rows={3}
+                  placeholder="Brief description of the event..."
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setShowEventModal(false)}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEvent}
+                disabled={loading}
+                className="flex items-center space-x-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>{editingEvent ? 'Update Event' : 'Create Event'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

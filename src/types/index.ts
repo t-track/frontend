@@ -1,14 +1,12 @@
 export interface Event {
   id: string;
   name: string;
+  eventID: string;
   location: string;
   startTime: string;
   endTime: string;
   subscriptionDeadline: string;
-  status: 'upcoming' | 'live' | 'finished';
-  categories: string[];
   backgroundImage: string;
-  description?: string;
 }
 
 export interface Rider {

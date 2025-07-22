@@ -12,7 +12,7 @@ const EventDetail: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const { liveApiUrl } = useApp();
-
+ 
   useEffect(() => {
     const loadEventData = async () => {
       if (!id) return;
@@ -74,20 +74,26 @@ const EventDetail: React.FC = () => {
       >
         <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
+          <div className="text-center text-white" style={{ overflow: "hidden" }}>
             <div className="mb-4">
               <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                event.status === 'live' 
+                new Date(event.endTime) < new Date() && new Date(event.startTime) < new Date() 
                   ? 'bg-red-500 animate-pulse' 
-                  : event.status === 'upcoming' 
+                  : new Date(event.startTime) > new Date() 
                   ? 'bg-emerald-500' 
                   : 'bg-gray-500'
               }`}>
-                {event.status.toUpperCase()}
+                {
+                new Date(event.endTime) < new Date() && new Date(event.startTime) < new Date() 
+                  ? 'LIVE' 
+                  : new Date(event.startTime) > new Date() 
+                  ? 'UPCOMMING' 
+                  : 'PASED'
+              }
               </span>
             </div>
             <h1 className="text-4xl font-bold mb-4">{event.name}</h1>
-            <div className="p-6 flex items-center justify-center space-x-6 text-lg">
+            <div className="p-6 flex items-center justify-center space-x-6 text-lg owerflow-hidden">
               <div className="flex items-center space-x-2">
                 <MapPin className="w-5 h-5" />
                 <span>{event.location}</span>
@@ -98,7 +104,7 @@ const EventDetail: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-5 h-5" />
-                <span>{new Date(event.startTime).toLocaleTimeString()}</span>
+                <span>{new Date(event.startTime).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
               </div>
             </div>
           </div>
@@ -107,7 +113,7 @@ const EventDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {event.status === 'live' && liveApiUrl && (
+          {new Date(event.endTime) < new Date() && new Date(event.startTime) < new Date() && liveApiUrl && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Live Results</h2>
               <LiveScoreboard apiUrl={liveApiUrl} />
@@ -116,7 +122,7 @@ const EventDetail: React.FC = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Event Details</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">{event.description}</p>
+            {/* <p className="text-gray-600 dark:text-gray-300 mb-6">{event.description }</p> */}
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -143,7 +149,7 @@ const EventDetail: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Categories</h3>
             <div className="space-y-3">
-              {event.categories.map((categoryName) => {
+              {/* {event.categories.map((categoryName) => {
                 const category = categories.find(c => c.name === categoryName);
                 return (
                   <Link
@@ -162,7 +168,7 @@ const EventDetail: React.FC = () => {
                     </div>
                   </Link>
                 );
-              })}
+              })} */}
             </div>
           </div>
 
