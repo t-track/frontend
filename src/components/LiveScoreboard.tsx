@@ -166,7 +166,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             phaseSpeed: getValue('Phase Speed',0),
             rideTime: getValue('Ride Time',0),
             rideSpeed: getValue('Ride Speed',0),
-            rank: getValue('Rank',0),
+            rank: getValue('Rank',0).replace(/[^a-z0-9]+/gi, ""),
             startPhase: getValue('Start phase',0),
             ready4nextphase: (getValue('Ready to next phase', 0) === 'yes'),
             phaseInProgress: (getValue('Ready to next phase', 0) === '' ),
@@ -186,7 +186,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             phaseSpeed: getValue('Phase Speed',1,0),
             rideTime: getValue('Ride Time',1,0),
             rideSpeed: getValue('Ride Speed',1,0),
-            rank: getValue('Rank',1,0),
+            rank: getValue('Rank',1,0).replace(/[^a-z0-9]+/gi, ""),
             ready4nextphase: getValue('Ready to next phase', 1,0) === 'yes',
             phaseInProgress: (getValue('Ready to next phase', 1,0) === '' ),
             estimatedTimeArrival: (getValue('Extimated time arrival',1,0)),
@@ -205,7 +205,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             phaseSpeed: getValue('Phase Speed',2,-1),
             rideTime: getValue('Ride Time',2,-1),
             rideSpeed: getValue('Ride Speed',2,-1),
-            rank: getValue('Rank',2,-1),
+            rank: getValue('Rank',2,-1).replace(/[^a-z0-9]+/gi, ""),
             ready4nextphase: getValue('Ready to next phase', 2,-1) === 'yes',
             phaseInProgress: (getValue('Ready to next phase', 2,-1) === '' ),
             estimatedTimeArrival: (getValue('Extimated time arrival',2,-1)), // used for the loading bar
@@ -280,7 +280,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
         ]
       };
     });
-    // console.log("riders", riders)
+    console.log("riders", riders)
     setProcessedRiders(riders);
   };
 
