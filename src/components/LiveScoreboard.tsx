@@ -306,6 +306,43 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
     );
   }
 
+  const CIRCLE_RADIUS = 7;
+  const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS; // ≈ 87.96
+
+  function LiveCountdown( countdown: number ) {
+    // countdown: number of seconds remaining (0-30 for example)
+    const progress = countdown / 30; // 1 when just started, 0 when done
+    const offset = CIRCUMFERENCE * (1 - progress);
+
+    return (
+      <div className="flex items-center space-x-3">
+        <div className="relative w-8 h-8">
+          {/* SVG Countdown as outer ring */}
+          <svg className="w-8 h-8 absolute top-0 left-0 -rotate-90" viewBox="0 0 32 32">
+            <circle
+              cx="16" cy="16" r={CIRCLE_RADIUS}
+              stroke="currentColor" strokeWidth="2"
+              fill="none" className="opacity-30"
+            />
+            <circle
+              cx="16" cy="16" r={CIRCLE_RADIUS}
+              stroke="red"
+              strokeWidth="2"
+              fill="none"
+              strokeDasharray={CIRCUMFERENCE}
+              strokeDashoffset={offset}
+              className="transition-all duration-1000 ease-linear"
+            />
+          </svg>
+          {/* Pulsing Dot in Center */}
+          <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-red-500 rounded-full animate-pulse"
+              style={{ transform: "translate(-50%, -50%)" }} />
+        </div>
+        <span className="text-sm">LIVE</span>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
       <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4">
@@ -314,17 +351,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
             <h3 className="text-xl font-bold">{liveData.List.HeadLine1}</h3>
             <p className="text-emerald-100 text-sm">{processedRiders.length} riders competing</p>
           </div>
-          <div className="flex items-center space-x-4">
-            
-            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-sm">LIVE</span>
-
-            <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
-              <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2" fill="none" className="opacity-30" />
-              <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray={`${2 * Math.PI * 14}`} strokeDashoffset={`${2 * Math.PI * 14 * (1 - (30 - countdown) / 30)}`} className="transition-all duration-1000 ease-linear" />
-            </svg>
-
-          </div>
+          {LiveCountdown( countdown )}
         </div>
       </div>
 
