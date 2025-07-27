@@ -48,7 +48,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
               </div>
               <div className="flex items-center space-x-1">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(event.startTime).toLocaleDateString()}</span>
+                <span>{new Date(event.startTime).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
               </div>
             </div>
           </div>
