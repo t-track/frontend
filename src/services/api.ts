@@ -400,17 +400,12 @@ function addStatusData(data:any[]){
 }
 // add random bdg image if not defined in the object
 function addPlaceholderImage(events: Event[]){
-  const images = [ 
-    "/event_backgrounds/3a369aa6b6_SUMMER_SPIRIT_RACE_1.jpg", 
-    "/event_backgrounds/4b585c9f5d_Locandina_Torgnon_2025.jpeg", 
-    "/event_backgrounds/4bd06593b1_g_20211130151538.jpg-1280x720.jpg", 
-    "/event_backgrounds/1604b7aa3d_locandina_Samorin.jpg" 
-  ]
   // index depends on the length of the name
   events.forEach(event => {
     if(event.backgroundImage == "") {
+      const images: {name: string, url: string }[] = getCoverImages()
       const index = event.location.length % images.length
-      event.backgroundImage = images[index];
+      event.backgroundImage = images[index].url;
     }
   });
   return events
@@ -498,6 +493,7 @@ export const createEvent = async (eventData: {
     id: eventData.id,
     name: eventData.name,
     location: eventData.location || 'TBD',
+    status: 'upcoming',
     startTime: eventData.startTime,
     endTime: new Date(new Date(eventData.startTime).getTime() + 8 * 60 * 60 * 1000).toISOString(), // 8 hours later
     subscriptionDeadline: new Date(new Date(eventData.startTime).getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days before
@@ -558,24 +554,26 @@ export const getMockEvents = (): Event[] => {
 
 // Available cover images
 export const getCoverImages = (): { url: string; name: string }[] => [
-  {
-    url: 'https://images.pexels.com/photos/1996333/pexels-photo-1996333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    name: 'Mountain Trail'
-  },
-  {
-    url: 'https://images.pexels.com/photos/1996334/pexels-photo-1996334.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    name: 'Forest Path'
-  },
-  {
-    url: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    name: 'Desert Landscape'
-  },
-  {
-    url: 'https://images.pexels.com/photos/1996327/pexels-photo-1996327.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    name: 'Countryside'
-  },
-  {
-    url: 'https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    name: 'Coastal Trail'
-  }
+  { name: 'alain-moreau', url: '/event_backgrounds/alain-moreau-unsplash.jpg'},
+  { name: 'bird-eye-venue', url: '/event_backgrounds/bird-eye-venue-1280x720.jpg'},
+  { name: 'dallas-reedy', url: '/event_backgrounds/dallas-reedy-unsplash.jpg'},
+  { name: 'daniel-sanchez', url: '/event_backgrounds/daniel-sanchez-unsplash.jpg'},
+  { name: 'elena-rabkina', url: '/event_backgrounds/elena-rabkina-unsplash.jpg'},
+  { name: 'helena-lopes', url: '/event_backgrounds/helena-lopes-unsplash.jpg'},
+  { name: 'jeff-griffith', url: '/event_backgrounds/jeff-griffith-1-nsplash.jpg'},
+  { name: 'jeff-griffith', url: '/event_backgrounds/jeff-griffith-unsplash.jpg'},
+  { name: 'julia-joppien', url: '/event_backgrounds/julia-joppien-unsplash.jpg'},
+  { name: 'keith-luke', url: '/event_backgrounds/keith-luke-unsplash.jpg'},
+  // { name: 'Locandina_Samorin', url: '/event_backgrounds/Locandina_Samorin.jpg'},
+  // { name: 'Locandina_Torgnon_2025', url: '/event_backgrounds/Locandina_Torgnon_2025.jpeg'},
+  // { name: 'mathew-schwartz', url: '/event_backgrounds/mathew-schwartz-5qRWQEdK7Sg-unsplash.jpg'},
+  // { name: 'mathias-reding', url: '/event_backgrounds/mathias-reding-ectPPziVG2I-unsplash.jpg'},
+  // { name: 'mike-kotsch', url: '/event_backgrounds/mike-kotsch-aZ4HBJf8Gmc-unsplash.jpg'},
+  // { name: 'noah-silliman', url: '/event_backgrounds/noah-silliman-fxAo3DiMICI-unsplash.jpg'},
+  // { name: 'philippe-gras', url: '/event_backgrounds/philippe-gras-WkvOwzndn94-unsplash.jpg'},
+  // { name: 'philippe-oursel', url: '/event_backgrounds/philippe-oursel-3v7qofrkMXk-unsplash.jpg'},
+  // { name: 'pietro-mattia', url: '/event_backgrounds/pietro-mattia-zXqizKxnbBU-unsplash.jpg'},
+  // { name: 'silje-midtgard', url: '/event_backgrounds/silje-midtgard-0F9oVQ3x2ak-unsplash.jpg'},
+  { name: 'SUMMER_SPIRIT_RACE_1', url: '/event_backgrounds/SUMMER_SPIRIT_RACE_1.jpg'},
+  { name: 'violeta-pencheva', url: '/event_backgrounds/violeta-pencheva-12dXKDujs40-unsplash.jpg'}
 ];

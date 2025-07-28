@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Moon, Sun, ExternalLink, Smartphone, Monitor, Shield, User, LogOut, Plus, Edit, Trash2, Calendar, Image, MapPin, Type, Save, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,16 +7,18 @@ import { Event } from '../types';
 import LoginModal from '../components/Auth/LoginModal';
 
 const Settings: React.FC = () => {
-  const { darkMode, toggleDarkMode, isPWA, liveApiUrl, setLiveApiUrl } = useApp();
+  const { darkMode, toggleDarkMode, isPWA, liveApiKey, setLiveApiKey, historyApiKey, setHistoryApiKey, eventApiKey, setEventApiKey } = useApp();
   const { user, userProfile, logout, isAdmin } = useAuth();
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
   const [customEvents, setCustomEvents] = React.useState<Event[]>([]);
   const [showEventModal, setShowEventModal] = React.useState(false);
   const [editingEvent, setEditingEvent] = React.useState<Event | null>(null);
+  const [visibleImagesCount, setVisibleImagesCount] = useState(5);
   const [eventForm, setEventForm] = React.useState({
     id: '',
     name: '',
     startTime: '',
+    endTime: '',
     backgroundImage: '',
     location: '',
     description: ''
@@ -44,6 +46,7 @@ const Settings: React.FC = () => {
       id: '',
       name: '',
       startTime: '',
+      endTime: '',
       backgroundImage: coverImages[0].url,
       location: '',
       description: ''
@@ -58,6 +61,7 @@ const Settings: React.FC = () => {
       id: event.id,
       name: event.name,
       startTime: event.startTime.slice(0, 16), // Format for datetime-local input
+      endTime: event.endTime.slice(0, 16), // Format for datetime-local input
       backgroundImage: event.backgroundImage,
       location: event.location,
       description: ''
@@ -216,19 +220,51 @@ const Settings: React.FC = () => {
           </div>
           <div className="space-y-4">
             <div>
-              <label htmlFor="liveApiUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Live API URL
+              <label htmlFor="liveApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Live API Key
               </label>
               <input
                 type="url"
-                id="liveApiUrl"
-                value={liveApiUrl}
-                onChange={(e) => setLiveApiUrl(e.target.value)}
+                id="liveApiKey"
+                value={liveApiKey}
+                onChange={(e) => setLiveApiKey(e.target.value)}
                 placeholder="https://api.t-tracksystem.com/live"
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Enter the URL for the live race data API endpoint
+                Enter the API key for the live race data API endpoint
+              </p>
+            </div>
+            <div>
+              <label htmlFor="eventApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Event API Key
+              </label>
+              <input
+                type="url"
+                id="eventApiKey"
+                value={eventApiKey}
+                onChange={(e) => setEventApiKey(e.target.value)}
+                placeholder="https://api.t-tracksystem.com/live"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Enter the API key for the event race data API endpoint
+              </p>
+            </div>
+            <div>
+              <label htmlFor="historyApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                History API Keys
+              </label>
+              <input
+                type="url"
+                id="historyApiKey"
+                value={historyApiKey}
+                onChange={(e) => setHistoryApiKey(e.target.value)}
+                placeholder="https://api.t-tracksystem.com/live"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Enter the API key for the history data API endpoint
               </p>
             </div>
             <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
@@ -374,9 +410,14 @@ const Settings: React.FC = () => {
                   Event ID *
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  inputMode="numeric"
+                  maxLength={7}
                   value={eventForm.id}
-                  onChange={(e) => setEventForm({ ...eventForm, id: e.target.value })}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setEventForm({ ...eventForm, id: value });
+                  }}
                   disabled={!!editingEvent}
                   placeholder="e.g., 340001"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-600"
@@ -408,7 +449,23 @@ const Settings: React.FC = () => {
                 <input
                   type="datetime-local"
                   value={eventForm.startTime}
-                  onChange={(e) => setEventForm({ ...eventForm, startTime: e.target.value })}
+                  onChange={(e) => { 
+                    setEventForm({ ...eventForm, startTime: e.target.value } ); 
+                    setEventForm({ ...eventForm, endTime: e.target.value } ); 
+                  } }
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* End Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  End Time *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={eventForm.endTime}
+                  onChange={(e) => setEventForm({ ...eventForm, endTime: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
@@ -433,7 +490,7 @@ const Settings: React.FC = () => {
                   Cover Image
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {coverImages.map((image) => (
+                  {coverImages.slice(0, visibleImagesCount).map((image) => (
                     <button
                       key={image.url}
                       type="button"
@@ -462,6 +519,17 @@ const Settings: React.FC = () => {
                     </button>
                   ))}
                 </div>
+                { visibleImagesCount < coverImages.length && (
+                  <div className="mt-3 flex justify-center">
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-gray-600 text-white rounded shadow hover:bg-gray-700 transition"
+                      onClick={() => setVisibleImagesCount((c: number) => Math.min(c + 5, coverImages.length))}
+                    >
+                      Load More Images
+                    </button>
+                  </div>
+                ) }
               </div>
 
               {/* Description */}

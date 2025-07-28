@@ -5,7 +5,7 @@ export interface Event {
   startTime: string;
   endTime: string;
   subscriptionDeadline: string;
-  // status: 'upcoming' | 'live' | 'finished';
+  status: 'upcoming' | 'live' | 'finished';
   categories: string[];
   backgroundImage: string;
   description?: string;
