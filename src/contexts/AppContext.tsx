@@ -4,6 +4,7 @@ interface AppContextType {
   darkMode: boolean;
   toggleDarkMode: () => void;
   isPWA: boolean;
+  liveApiUrl: string;
   liveApiKey: string;
   setLiveApiKey: (url: string) => void;
 }
@@ -20,6 +21,7 @@ export const useApp = () => {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
+  const [liveApiUrl, setLiveApiUrl] = useState("https://api.t-track.rivieraapps.com/api/");
   const [isPWA, setIsPWA] = useState(false);
   const [liveApiKey, setLiveApiKey] = useState('1234566789');
   const [eventApiKey, setEventApiKey] = useState('1234566789');
@@ -58,6 +60,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       darkMode,
       toggleDarkMode,
       isPWA,
+      liveApiUrl,
       liveApiKey,
       setLiveApiKey,
       historyApiKey,

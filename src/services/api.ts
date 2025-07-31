@@ -24,12 +24,12 @@ export const fetchResultsInfo = async (): Promise<any> => {
 let mockEvents: any[] = [
   {
     id: '1',
-    name: 'Summer Sprint Race',
-    eventID: '340000',
+    name: 'Test Sprint Race',
+    eventID: '345604',
     location: 'Tuscany Hills',
-    startTime: '2024-12-15T08:00:00Z',
-    endTime: '2024-12-15T16:00:00Z',
-    subscriptionDeadline: '2024-12-10T23:59:59Z',
+    startTime: '2025-07-31T05:00:00Z',
+    endTime: '2025-07-31T22:00:00Z',
+    subscriptionDeadline: '2025-7-10T23:59:59Z',
     backgroundImage: ''
   },
   {
@@ -388,9 +388,9 @@ function addStatusData(data:any[]){
   data.forEach(event => {
     event.description = '';
     event.categories = [];
-      if (new Date(event.endTime) < new Date() && new Date(event.startTime) > new Date() ) {
+      if (new Date(event.endTime).getTime() > new Date().getTime() && new Date(event.startTime).getTime() < new Date().getTime() ) {
         event.status = 'live'
-      }else if(new Date(event.endTime) < new Date() ){
+      }else if(new Date(event.endTime).getTime() < new Date().getTime() ){
         event.status =  'finished'
       }else{
         event.status = 'upcoming'
@@ -455,11 +455,13 @@ export const fetchCategories = async (): Promise<Category[]> => {
 export const fetchLiveData = async (apiUrl: string, eventID: string): Promise<LiveData | null> => {
   // Return mock data for development/demo
   await new Promise(resolve => setTimeout(resolve, 300));
-  return getMockLiveData();
+ 
   if (!apiUrl || apiUrl === 'mock') {
   }
+  console.log("apiUrl",apiUrl)
   try {
-    const response = await fetch(apiUrl + "/livedata/" + eventID);
+    const response = await fetch(apiUrl + "livedata/345604" );
+    console.log("response",response)
     if (!response.ok) throw new Error('Failed to fetch live data');
     return await response.json();
   } catch (error) {

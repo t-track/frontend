@@ -82,7 +82,8 @@ const Settings: React.FC = () => {
     try {
       const eventData = {
         ...eventForm,
-        startTime: new Date(eventForm.startTime).toISOString()
+        startTime: new Date(eventForm.startTime).toISOString(),
+        endTime: new Date(eventForm.endTime).toISOString()
       };
 
       if (editingEvent) {
@@ -313,11 +314,15 @@ const Settings: React.FC = () => {
                         src={event.backgroundImage}
                         alt={event.name}
                         className="w-16 h-10 object-cover rounded"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null; // Prevent looping
+                          e.currentTarget.src = '/no-image-icon-6.png'; // Path to your fallback image
+                        }}
                       />
                       <div>
                         <h3 className="font-medium text-gray-900 dark:text-white">{event.name}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
-                          <span>ID: {event.id}</span>
+                          {/* <span>ID: {event.id}</span> */}
                           <span>{new Date(event.startTime).toLocaleDateString()}</span>
                           <span>{event.location}</span>
                         </div>
@@ -450,8 +455,7 @@ const Settings: React.FC = () => {
                   type="datetime-local"
                   value={eventForm.startTime}
                   onChange={(e) => { 
-                    setEventForm({ ...eventForm, startTime: e.target.value } ); 
-                    setEventForm({ ...eventForm, endTime: e.target.value } ); 
+                    setEventForm({ ...eventForm, startTime: e.target.value,  endTime: e.target.value  } );
                   } }
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
