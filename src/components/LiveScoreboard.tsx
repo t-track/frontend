@@ -5,6 +5,7 @@ import { fetchLiveData } from '../services/api';
 
 interface LiveScoreboardProps {
   apiUrl: string;
+  eventID: string;
 }
 
 interface ProcessedRider {
@@ -49,7 +50,7 @@ interface ProcessedRider {
   }>;
 }
 
-const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
+const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
   const [liveData, setLiveData] = useState<LiveData | null>(null);
   const [processedRiders, setProcessedRiders] = useState<ProcessedRider[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +65,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
         try {
           setLoading(true);
           setError(null);
-          const mockData = await fetchLiveData('mock');
+          const mockData = await fetchLiveData('mock', "123");
           if (mockData) {
             setLiveData(mockData);
             processLiveData(mockData);
@@ -80,7 +81,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl }) => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchLiveData(apiUrl);
+        const data = await fetchLiveData(apiUrl, eventID);
         
         if (data) {
           setLiveData(data);

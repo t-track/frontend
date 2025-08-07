@@ -7,7 +7,7 @@ import { Event } from '../types';
 import LoginModal from '../components/Auth/LoginModal';
 
 const Settings: React.FC = () => {
-  const { darkMode, toggleDarkMode, isPWA, liveApiKey, setLiveApiKey, historyApiKey, setHistoryApiKey, eventApiKey, setEventApiKey } = useApp();
+  const { darkMode, toggleDarkMode, isPWA, apiUrl, liveApiKey, setLiveApiKey, historyApiKey, setHistoryApiKey, eventApiKey, setEventApiKey } = useApp();
   const { user, userProfile, logout, isAdmin } = useAuth();
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
   const [customEvents, setCustomEvents] = React.useState<Event[]>([]);
@@ -89,7 +89,7 @@ const Settings: React.FC = () => {
       if (editingEvent) {
         await updateEvent(editingEvent.id, eventData);
       } else {
-        await createEvent(eventData);
+        await createEvent(apiUrl, eventData);
       }
 
       // Refresh the events list

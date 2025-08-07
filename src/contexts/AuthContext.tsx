@@ -48,6 +48,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (user) {
         // Get user profile from Firestore
         try {
+          var url = apiUrl + "users" + "/" + user.uid
+          const response = await fetch( url, {
+            method: "GET"
+          });
+          if (!response.ok) throw new Error('Request failed');
+        }catch (error) {
+          console.log("ERROR: couldn't retrive user", error)
+        }
+        
+        try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             setUserProfile(userDoc.data() as UserProfile);
@@ -96,11 +106,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAdmin: email === 'admin@t-track.com', // Demo admin check
       displayName
     };
-    
     try {
-      await setDoc(doc(db, 'users', result.user.uid), userProfile);
-    } catch (error) {
-      console.error('Error creating user profile:', error);
+      var url = apiUrl + "users"
+      const response = await fetch( url, {
+        method: "POST", body: JSON.stringify( userProfile )
+      });
+      if (!response.ok) throw new Error('Request failed');
+    }catch (error) {
+      console.log("ERROR: couldn't save user", error)
     }
   };
 

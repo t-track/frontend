@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, Calendar, Trophy, Filter } from 'lucide-react';
 import { Event } from '../types';
 import { fetchEvents } from '../services/api';
+import { useApp } from '../contexts/AppContext';
 import EventCard from '../components/EventCard';
 
 const History: React.FC = () => {
+  const { apiUrl } = useApp();
   const [events, setEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +16,7 @@ const History: React.FC = () => {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const data = await fetchEvents();
+        const data = await fetchEvents(apiUrl);
         // Only show finished events in history
         const finishedEvents = data.filter(event => event.status === 'finished');
         setEvents(finishedEvents);

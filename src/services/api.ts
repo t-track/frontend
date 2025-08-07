@@ -293,7 +293,6 @@ let mockEvents: any[] = [
     backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
   },
 ];
-mockEvents = addStatusData(mockEvents);
 
 const getMockEventIDs = (): string[] => [
   "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
@@ -411,20 +410,38 @@ function addPlaceholderImage(events: Event[]){
   return events
 }
 
-export const fetchEvents = async (): Promise<Event[]> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  mockEvents = addStatusData(mockEvents);
-  mockEvents = addPlaceholderImage(mockEvents)
-  // sort events by the date
-  mockEvents.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
-  return mockEvents;
+export const fetchEvents = async ( apiUrl: string ): Promise<Event[]> => {
+  var events: Event[] = [];
+  try {
+    var url = apiUrl + "events"
+    const response = await fetch( url );
+    if (!response.ok) throw new Error('Failed to fetch live data');
+    events = await response.json()
+    events = addStatusData(events);
+    events = addPlaceholderImage(events);
+    return events;
+  }catch ( error ) {
+    console.log("Error:", error)
+    events = addStatusData(mockEvents);
+    events = addPlaceholderImage(mockEvents);
+    return events;
+  }
 };
 
-export const fetchEventById = async (id: string): Promise<Event | null> => {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  addStatusData(mockEvents);
-  return mockEvents.find(event => event.id === id) || null;
+export const fetchEventById = async (apiUrl: string, id: string|null ): Promise<Event | null> => {
+  try {
+    var url = apiUrl + "events"
+    if( id != '' || id !== undefined || id != null ){ url += '/' + id }
+  
+    const response = await fetch( url );
+    if (!response.ok) throw new Error('Failed to fetch live data');
+    var event: Event = await response.json()
+    var events = addStatusData([event]);
+    return events[0];
+  }catch{
+    var events = addStatusData(mockEvents);
+    return events.find(event => event.id === id) || null;
+  }
 };
 
 export const fetchRiders = async (): Promise<Rider[]> => {
@@ -460,8 +477,7 @@ export const fetchLiveData = async (apiUrl: string, eventID: string): Promise<Li
   }
   console.log("apiUrl",apiUrl)
   try {
-    const response = await fetch(apiUrl + "livedata/345604" );
-    console.log("response",response)
+    const response = await fetch(apiUrl + "livedata/" + eventID );
     if (!response.ok) throw new Error('Failed to fetch live data');
     return await response.json();
   } catch (error) {
@@ -482,10 +498,12 @@ export const fetchRidersByCategory = async (eventId: string, categoryId: string)
   return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
 };
 
-export const createEvent = async (eventData: {
+export const createEvent = async (apiUrl: string, eventData: {
   id: string;
   name: string;
   startTime: string;
+  endTime: string;
+  subscriptionDeadline: string;
   backgroundImage: string;
   location?: string;
   categories?: string[];
@@ -496,9 +514,10 @@ export const createEvent = async (eventData: {
     name: eventData.name,
     location: eventData.location || 'TBD',
     status: 'upcoming',
+    categories: [],
     startTime: eventData.startTime,
-    endTime: new Date(new Date(eventData.startTime).getTime() + 8 * 60 * 60 * 1000).toISOString(), // 8 hours later
-    subscriptionDeadline: new Date(new Date(eventData.startTime).getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days before
+    endTime: eventData.endTime,
+    subscriptionDeadline: eventData.subscriptionDeadline || new Date(new Date(eventData.startTime).getTime() - 5 * 24 * 60 * 60 * 1000).toISOString() , 
     backgroundImage: eventData.backgroundImage
   };
 
@@ -509,6 +528,16 @@ export const createEvent = async (eventData: {
   localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
   
   await new Promise(resolve => setTimeout(resolve, 300));
+  try {
+    var url = apiUrl + "events"
+    const response = await fetch( url, {
+      method: "POST", body: JSON.stringify( newEvent )
+    });
+    if (!response.ok) throw new Error('Request failed');
+  }catch (error) {
+    console.log("ERROR: couldn't save event", error)
+  }
+
   return newEvent;
 };
 
