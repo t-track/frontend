@@ -6,9 +6,10 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
+// import { useApp } from './AppContext';
+
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
-
 interface UserProfile {
   uid: string;
   email: string;
@@ -27,6 +28,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const apiUrl = "https://api.t-track.rivieraapps.com/api/";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

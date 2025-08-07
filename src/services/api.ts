@@ -415,7 +415,7 @@ export const fetchEvents = async ( apiUrl: string ): Promise<Event[]> => {
   try {
     var url = apiUrl + "events"
     const response = await fetch( url );
-    if (!response.ok) throw new Error('Failed to fetch live data');
+    if (!response.ok) throw new Error('Failed to fetch events');
     events = await response.json()
     events = addStatusData(events);
     events = addPlaceholderImage(events);

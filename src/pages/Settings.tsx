@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Moon, Sun, ExternalLink, Smartphone, Monitor, Shield, User, LogOut, Plus, Edit, Trash2, Calendar, Image, MapPin, Type, Save, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
-import { createEvent, updateEvent, deleteEvent, getMockEvents, getCoverImages } from '../services/api';
+import { createEvent, updateEvent, deleteEvent, getMockEvents, getCoverImages, fetchEvents } from '../services/api';
 import { Event } from '../types';
 import LoginModal from '../components/Auth/LoginModal';
 
@@ -19,6 +19,7 @@ const Settings: React.FC = () => {
     name: '',
     startTime: '',
     endTime: '',
+    subscriptionDeadline: '',
     backgroundImage: '',
     location: '',
     description: ''
@@ -26,8 +27,22 @@ const Settings: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
-  React.useEffect(() => {
-    setCustomEvents(getMockEvents());
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const data = await fetchEvents(apiUrl);
+        // sort events by the date
+        data.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+        console.log(data)
+        setCustomEvents(data);
+      } catch (error) {
+        console.error('Error loading events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvents();
   }, []);
 
   const coverImages = getCoverImages();
@@ -83,7 +98,8 @@ const Settings: React.FC = () => {
       const eventData = {
         ...eventForm,
         startTime: new Date(eventForm.startTime).toISOString(),
-        endTime: new Date(eventForm.endTime).toISOString()
+        endTime: new Date(eventForm.endTime).toISOString(),
+        subscriptionDeadline: new Date(eventForm.subscriptionDeadline).toISOString(),
       };
 
       if (editingEvent) {
@@ -93,7 +109,8 @@ const Settings: React.FC = () => {
       }
 
       // Refresh the events list
-      setCustomEvents(getMockEvents());
+      const data = await fetchEvents(apiUrl);
+      setCustomEvents(data);
       setShowEventModal(false);
     } catch (err: any) {
       setError(err.message || 'Failed to save event');
@@ -470,6 +487,19 @@ const Settings: React.FC = () => {
                   type="datetime-local"
                   value={eventForm.endTime}
                   onChange={(e) => setEventForm({ ...eventForm, endTime: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+
+              {/* Submission deadline Time */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Submission Deadline *
+                </label>
+                <input
+                  type="datetime-local"
+                  value={eventForm.subscriptionDeadline}
+                  onChange={(e) => setEventForm({ ...eventForm, subscriptionDeadline: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
