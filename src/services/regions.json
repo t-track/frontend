@@ -1,0 +1,22 @@
+[
+  {"englishName": "Aosta Valley", "region": "Valle d'Aosta", "path": "/regions-italy/Flag_of_Valle-dAosta.svg" },
+  {"englishName": "Piedmont", "region": "Piemonte", "path": "/regions-italy/Flag_of_Piedmont.svg" },
+  {"englishName": "Lombardy", "region": "Lombardia", "path": "/regions-italy/Flag_of_Lombardia.svg" },
+  {"englishName": "Trentino-Alt Adige/South Tyrol", "region": "Veneto", "path": "/regions-italy/Flag_of_Veneto.svg" },
+  {"englishName": "Friuli Venezia Giulia" "region": "Liguria", "path": "/regions-italy/Flag_of_Liguria.svg" },
+  {"englishName": "Veneto", "region": "Emilia-Romagna", "path": "/regions-italy/Flag_of_Emilia-Romagna.svg" },
+  {"englishName": "Liguria", "region": "Toscana", "path": "/regions-italy/Flag_of_Toscana.svg" },
+  {"englishName": "Emilia-Romagna", "region": "Umbria", "path": "/regions-italy/Flag_of_Umbria.svg" },
+  {"englishName": "Tuscany", "region": "Marche", "path": "/regions-italy/Flag_of_Marche.svg" },
+  {"englishName": "Umbria", "region": "Lazio", "path": "/regions-italy/Flag_of_Lazio.svg" },
+  {"englishName": "Marche", "region": "Abruzzo", "path": "/regions-italy/Flag_of_Abruzzo.svg" },
+  {"englishName": "Lazio", "region": "Molise", "path": "/regions-italy/Flag_of_Molise.svg" },
+  {"englishName": "Abruzzo", "region": "Campania", "path": "/regions-italy/Flag_of_Molise.svg" },
+  {"englishName": "Molise", "region": "Puglia", "path": "/regions-italy/Flag_of_Apulia.svg" },
+  {"englishName": "Campania", "region": "Basilicata", "path": "/regions-italy/Flag_of_Basilicata.svg" },
+  {"englishName": "Apulia", "region": "Calabria", "path": "/regions-italy/Flag_of_Calabria.svg" },
+  {"englishName": "Basilicata", "region": "Sicilia", "path": "/regions-italy/Flag_of_Sicilia.svg" },
+  {"englishName": "Calabria", "region": "Sardegna", "path": "/regions-italy/Flag_of_Sardinia.svg" },
+  {"englishName": "Sicily", "region": "Trentino-Alto Adige", "path": "/regions-italy/Flag_of_Trentino-South_Tyrol.svg" },
+  {"englishName": "Sardinia", "region": "Friuli-Venezia Giulia", "path": "/regions-italy/Flag_of_Friuli-Venezia_Giulia.svg" }
+]
