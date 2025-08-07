@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Moon, Sun, ExternalLink, Smartphone, Monitor, Shield, User, LogOut, Plus, Edit, Trash2, Calendar, Image, MapPin, Type, Save, X } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useAuth } from '../contexts/AuthContext';
-import { createEvent, updateEvent, deleteEvent, getMockEvents, getCoverImages, fetchEvents } from '../services/api';
+import { createEvent, updateEvent, deleteEvent, getCoverImages, fetchEvents } from '../services/api';
 import { Event } from '../types';
 import LoginModal from '../components/Auth/LoginModal';
 
@@ -126,7 +126,7 @@ const Settings: React.FC = () => {
 
     try {
       await deleteEvent(eventId);
-      setCustomEvents(getMockEvents());
+      setCustomEvents(fetchEvents(apiUrl));
     } catch (err: any) {
       console.error('Failed to delete event:', err);
     }

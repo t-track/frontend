@@ -410,21 +410,61 @@ function addPlaceholderImage(events: Event[]){
   return events
 }
 
-export const fetchEvents = async ( apiUrl: string ): Promise<Event[]> => {
-  var events: Event[] = [];
+export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
+  const LOCAL_STORAGE_KEY = 'eventsData';
+
+  // Try loading events from localStorage first
+  const storedEventsJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (storedEventsJSON) {
+    try {
+      let storedEvents: Event[] = JSON.parse(storedEventsJSON);
+      if (storedEvents && storedEvents.length > 0) {
+        // Return processed stored events right away
+        storedEvents = addStatusData(storedEvents);
+        storedEvents = addPlaceholderImage(storedEvents);
+        return storedEvents;
+      }
+    } catch (e) {
+      console.warn('Failed to parse stored events from localStorage, will fetch from API.', e);
+    }
+  }
+
+  // If no local data or failed to parse, fetch from API
   try {
-    var url = apiUrl + "events"
-    const response = await fetch( url );
-    if (!response.ok) throw new Error('Failed to fetch events');
-    events = await response.json()
+    const url = apiUrl.endsWith('/') ? apiUrl + 'events' : apiUrl + '/events';
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to fetch events from API');
+
+    let events: Event[] = await response.json();
+
+    // Process events
     events = addStatusData(events);
     events = addPlaceholderImage(events);
+
+    // Cache processed events in localStorage for future use
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
+    } catch (e) {
+      console.warn('Failed to save events to localStorage.', e);
+    }
+
     return events;
-  }catch ( error ) {
-    console.log("Error:", error)
-    events = addStatusData(mockEvents);
-    events = addPlaceholderImage(mockEvents);
-    return events;
+  } catch (error) {
+    console.error('Error fetching events:', error);
+
+    // Fallback to mockEvents
+    // Assuming mockEvents is an array of Event objects available in scope
+    let fallbackEvents = addStatusData(mockEvents);
+    fallbackEvents = addPlaceholderImage(fallbackEvents);
+
+    // Optionally, cache mock events so localStorage isn't empty next time
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fallbackEvents));
+    } catch (e) {
+      console.warn('Failed to save fallback events to localStorage.', e);
+    }
+
+    return fallbackEvents;
   }
 };
 
@@ -572,16 +612,7 @@ export const deleteEvent = async (eventId: string): Promise<boolean> => {
   return true;
 };
 
-export const getMockEvents = (): Event[] => {
-  // Load from localStorage on first call
-  if (mockEvents.length === 0) {
-    const stored = localStorage.getItem('mockEvents');
-    if (stored) {
-      mockEvents = JSON.parse(stored);
-    }
-  }
-  return mockEvents;
-};
+
 
 // Available cover images
 export const getCoverImages = (): { url: string; name: string }[] => [
