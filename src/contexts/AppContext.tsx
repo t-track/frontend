@@ -5,7 +5,8 @@ interface AppContextType {
   toggleDarkMode: () => void;
   isPWA: boolean;
   liveApiUrl: string;
-  setLiveApiUrl: (url: string) => void;
+  liveApiKey: string;
+  setLiveApiKey: (url: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -20,9 +21,11 @@ export const useApp = () => {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
+  const [liveApiUrl, setLiveApiUrl] = useState("https://api.t-track.rivieraapps.com/api/");
   const [isPWA, setIsPWA] = useState(false);
-  const [liveApiUrl, setLiveApiUrl] = useState('https://api.raceresult.com/345604/y');
-  const [eventApiUrl, setEventApiUrl] = useState('https://api.raceresult.com/345604/y');
+  const [liveApiKey, setLiveApiKey] = useState('1234566789');
+  const [eventApiKey, setEventApiKey] = useState('1234566789');
+  const [historyApiKey, setHistoryApiKey] = useState('1234566789');
   const [futureEventApiUrl, setFutureEventApiUrl] = useState('https://api.raceresult.com/345604/y');
 
   useEffect(() => {
@@ -58,7 +61,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       toggleDarkMode,
       isPWA,
       liveApiUrl,
-      setLiveApiUrl
+      liveApiKey,
+      setLiveApiKey,
+      historyApiKey,
+      setHistoryApiKey,
+      eventApiKey,
+      setEventApiKey,
     }}>
       {children}
     </AppContext.Provider>
