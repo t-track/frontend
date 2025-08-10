@@ -15,7 +15,7 @@ const Settings: React.FC = () => {
   const [editingEvent, setEditingEvent] = React.useState<Event | null>(null);
   const [visibleImagesCount, setVisibleImagesCount] = useState(5);
   const [eventForm, setEventForm] = React.useState({
-    id: '',
+    eventID: '',
     name: '',
     startTime: '',
     endTime: '',
@@ -57,15 +57,16 @@ const Settings: React.FC = () => {
 
   const openCreateModal = () => {
     setEditingEvent(null);
-    setEventForm({
-      id: '',
+    setEventForm( {
+      eventID: '',
       name: '',
       startTime: '',
       endTime: '',
       backgroundImage: coverImages[0].url,
+      subscriptionDeadline: '',
       location: '',
       description: ''
-    });
+    } );
     setShowEventModal(true);
     setError('');
   };
@@ -73,12 +74,13 @@ const Settings: React.FC = () => {
   const openEditModal = (event: Event) => {
     setEditingEvent(event);
     setEventForm({
-      id: event.id,
+      eventID: event.eventID,
       name: event.name,
       startTime: event.startTime.slice(0, 16), // Format for datetime-local input
       endTime: event.endTime.slice(0, 16), // Format for datetime-local input
       backgroundImage: event.backgroundImage,
       location: event.location,
+      subscriptionDeadline: event.subscriptionDeadline,
       description: ''
     });
     setError('');
@@ -86,7 +88,7 @@ const Settings: React.FC = () => {
   };
 
   const handleSaveEvent = async () => {
-    if (!eventForm.id || !eventForm.name || !eventForm.startTime) {
+    if (!eventForm.eventID || !eventForm.name || !eventForm.startTime) {
       setError('Please fill in all required fields');
       return;
     }
@@ -103,7 +105,7 @@ const Settings: React.FC = () => {
       };
 
       if (editingEvent) {
-        await updateEvent(editingEvent.id, eventData);
+        await updateEvent(editingEvent.eventID, eventData);
       } else {
         await createEvent(apiUrl, eventData);
       }
@@ -126,7 +128,7 @@ const Settings: React.FC = () => {
 
     try {
       await deleteEvent(eventId);
-      setCustomEvents(fetchEvents(apiUrl));
+      setCustomEvents( await fetchEvents(apiUrl));
     } catch (err: any) {
       console.error('Failed to delete event:', err);
     }
@@ -325,7 +327,7 @@ const Settings: React.FC = () => {
             ) : (
               <div className="space-y-3">
                 {customEvents.map((event) => (
-                  <div key={event.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <div key={event.eventID} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <div className="flex items-center space-x-4">
                       <img
                         src={event.backgroundImage}
@@ -353,7 +355,7 @@ const Settings: React.FC = () => {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteEvent(event.id)}
+                        onClick={() => handleDeleteEvent(event.eventID)}
                         className="p-2 text-red-600 hover:text-red-700 dark:text-red-400"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -435,10 +437,10 @@ const Settings: React.FC = () => {
                   type="number"
                   inputMode="numeric"
                   maxLength={7}
-                  value={eventForm.id}
+                  value={eventForm.eventID}
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, '');
-                    setEventForm({ ...eventForm, id: value });
+                    setEventForm({ ...eventForm, eventID: value });
                   }}
                   disabled={!!editingEvent}
                   placeholder="e.g., 340001"

@@ -539,7 +539,7 @@ export const fetchRidersByCategory = async (eventId: string, categoryId: string)
 };
 
 export const createEvent = async (apiUrl: string, eventData: {
-  id: string;
+  eventID: string;
   name: string;
   startTime: string;
   endTime: string;
@@ -550,7 +550,7 @@ export const createEvent = async (apiUrl: string, eventData: {
   description?: string;
 }): Promise<Event> => {
   const newEvent: Event = {
-    id: eventData.id,
+    eventID: eventData.eventID,
     name: eventData.name,
     location: eventData.location || 'TBD',
     status: 'upcoming',
