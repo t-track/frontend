@@ -1,4 +1,5 @@
 export interface Event {
+  _id: string;
   eventID: string;
   name: string;
   location: string;
@@ -67,7 +68,7 @@ export interface VeterinaryCheck {
 }
 
 export interface HorseResult {
-  eventId: string;
+  eventID: string;
   eventName: string;
   date: string;
   position: number;

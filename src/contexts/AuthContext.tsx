@@ -59,31 +59,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log("ERROR: couldn't retrive user", error)
         }
         
-        // try {
-        //   const userDoc = await getDoc(doc(db, 'users', user.uid));
-        //   if (userDoc.exists()) {
-        //     setUserProfile(userDoc.data() as UserProfile);
-        //   } else {
-        //     // Create default user profile
-        //     const defaultProfile: UserProfile = {
-        //       uid: user.uid,
-        //       email: user.email || '',
-        //       isAdmin: false,
-        //       displayName: user.displayName || undefined
-        //     };
-        //     await setDoc(doc(db, 'users', user.uid), defaultProfile);
-        //     setUserProfile(defaultProfile);
-        //   }
-        // } catch (error) {
-        //   console.error('Error fetching user profile:', error);
-        //   // Fallback for demo purposes
-        //   setUserProfile({
-        //     uid: user.uid,
-        //     email: user.email || '',
-        //     isAdmin: user.email === 'admin@t-track.com', // Demo admin check
-        //     displayName: user.displayName || undefined
-        //   });
-        // }
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            setUserProfile(userDoc.data() as UserProfile);
+          } else {
+            // Create default user profile
+            const defaultProfile: UserProfile = {
+              uid: user.uid,
+              email: user.email || '',
+              isAdmin: false,
+              displayName: user.displayName || undefined
+            };
+            await setDoc(doc(db, 'users', user.uid), defaultProfile);
+            setUserProfile(defaultProfile);
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          // Fallback for demo purposes
+          setUserProfile({
+            uid: user.uid,
+            email: user.email || '',
+            isAdmin: user.email === 'admin@t-track.com', // Demo admin check
+            displayName: user.displayName || undefined
+          });
+        }
       } else {
         setUserProfile(null);
       }

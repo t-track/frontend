@@ -21,278 +21,9 @@ export const fetchResultsInfo = async (): Promise<any> => {
 };
 
 // Mock data for development
-let mockEvents: any[] = [
-  {
-    id: '1',
-    name: 'Test Sprint Race',
-    eventID: '345604',
-    location: 'Tuscany Hills',
-    startTime: '2025-07-31T05:00:00Z',
-    endTime: '2025-07-31T22:00:00Z',
-    subscriptionDeadline: '2025-7-10T23:59:59Z',
-    backgroundImage: ''
-  },
-  {
-    id: '27',
-    name: 'Mountain Challenge',
-    eventID: '340001',
-    location: 'Alpine Region',
-    startTime: '2024-12-20T07:00:00Z',
-    endTime: '2024-12-20T18:00:00Z',
-    subscriptionDeadline: '2024-12-15T23:59:59Z',
-    backgroundImage: ''
-  },
-  {
-    id: '26',
-    name: '28° Trofeo Les Grandes Montagnes (2)',
-    eventID: '340002',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: ''
-  },
-  {
-    id: '25',
-    name: 'MASTER ENERGY CUP (2)',
-    eventID: '340003',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: ''
-  },
-  {
-    id: '24',
-    name: 'MASTER ENERGY CUP (1)',
-    eventID: '340004',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: ''
-  },
-  {
-    id: '23',
-    name: '28° Trofeo Les Grandes Montagnes (1)',
-    eventID: '340005',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '22',
-    name: 'Endurance horse Show Pony',
-    eventID: '340006',
-    location: 'Samorin (SVK)',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '21',
-    name: 'Endurance horse Show Pony',
-    eventID: '340007',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '20',
-    name: 'Autumn Classic',
-    eventID: '340008',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '19',
-    name: 'Autumn Classic',
-    eventID: '340009',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '18',
-    name: 'Autumn Classic',
-    eventID: '340010',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '17',
-    name: 'Autumn Classic',
-    eventID: '340011',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '16',
-    name: 'Autumn Classic',
-    eventID: '340420',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '15',
-    name: 'Autumn Classic',
-    eventID: '340501',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '14',
-    name: 'Autumn Classic',
-    eventID: '341453',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '13',
-    name: 'Autumn Classic',
-    eventID: '341520',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '12',
-    name: 'Autumn Classic',
-    eventID: '341665',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '11',
-    name: 'Autumn Classic',
-    eventID: '342379',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '10',
-    name: 'Autumn Classic',
-    eventID: '342741',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '9',
-    name: 'Autumn Classic',
-    eventID: '343452',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '8',
-    name: 'Autumn Classic',
-    eventID: '343526',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '7',
-    name: 'Autumn Classic',
-    eventID: '343879',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '6',
-    name: 'Autumn Classic',
-    eventID: '343880',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '5',
-    name: 'Autumn Classic',
-    eventID: '343882',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '4',
-    name: 'Autumn Classic',
-    eventID: '342379',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2024-11-15T17:00:00Z',
-    subscriptionDeadline: '2024-11-10T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '3',
-    name: 'Autumn Classic',
-    eventID: '345604',
-    location: 'countryside',
-    startTime: '2024-11-15T09:00:00Z',
-    endTime: '2025-7-27T17:00:00Z',
-    subscriptionDeadline: '2025-7-27T17T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-  {
-    id: '2',
-    name: 'Autumn Classic',
-    eventID: '349041',
-    location: 'countryside',
-    startTime: '2025-08-23T09:00:00Z',
-    endTime: '2025-08-23T17:00:00Z',
-    subscriptionDeadline: '2025-08-23T23:59:59Z',
-    backgroundImage: 'https://images.pexels.com/photos/1996335/pexels-photo-1996335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
-  },
-];
+let mockEvents: any[] = [];
+
+const LOCAL_STORAGE_KEY = 'eventsData1';
 
 const getMockEventIDs = (): string[] => [
   "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
@@ -356,7 +87,7 @@ const mockHorses: Horse[] = [
     owner: 'Claudio Bellagente',
     results: [
       {
-        eventId: '1',
+        eventID: '1',
         eventName: 'Summer Sprint Race',
         date: '2024-12-15',
         position: 1,
@@ -410,61 +141,51 @@ function addPlaceholderImage(events: Event[]){
   return events
 }
 
-export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
-  const LOCAL_STORAGE_KEY = 'eventsData';
+const LOCAL_STORAGE_TIME_KEY = 'eventsDataUpdated';
+const CACHE_MAX_AGE_MS = 6_000; // 6s 
 
-  // Try loading events from localStorage first
-  const storedEventsJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (storedEventsJSON) {
+export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
+  const now = Date.now();
+  const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const cacheTime = Number(localStorage.getItem(LOCAL_STORAGE_TIME_KEY) || '0');
+  // Use cache if it's fresh
+  if (cached && (now - cacheTime < CACHE_MAX_AGE_MS)) {
+    console.log("Use cache if it's fresh")
     try {
-      let storedEvents: Event[] = JSON.parse(storedEventsJSON);
-      if (storedEvents && storedEvents.length > 0) {
-        // Return processed stored events right away
-        storedEvents = addStatusData(storedEvents);
-        storedEvents = addPlaceholderImage(storedEvents);
-        return storedEvents;
-      }
-    } catch (e) {
-      console.warn('Failed to parse stored events from localStorage, will fetch from API.', e);
-    }
+      let events: Event[] = JSON.parse(cached);
+      events = addStatusData(events);
+      events = addPlaceholderImage(events);
+      return events;
+    } catch {}
   }
 
-  // If no local data or failed to parse, fetch from API
+  // Otherwise fetch from API
   try {
+    console.log("Fetching from API")
     const url = apiUrl.endsWith('/') ? apiUrl + 'events' : apiUrl + '/events';
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch events from API');
-
+    if (!response.ok) throw new Error('API error');
     let events: Event[] = await response.json();
-
-    // Process events
+    console.log("response", events)
     events = addStatusData(events);
     events = addPlaceholderImage(events);
-
-    // Cache processed events in localStorage for future use
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
-    } catch (e) {
-      console.warn('Failed to save events to localStorage.', e);
-    }
-
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
+    localStorage.setItem(LOCAL_STORAGE_TIME_KEY, now.toString());
     return events;
   } catch (error) {
-    console.error('Error fetching events:', error);
-
-    // Fallback to mockEvents
-    // Assuming mockEvents is an array of Event objects available in scope
-    let fallbackEvents = addStatusData(mockEvents);
-    fallbackEvents = addPlaceholderImage(fallbackEvents);
-
-    // Optionally, cache mock events so localStorage isn't empty next time
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fallbackEvents));
-    } catch (e) {
-      console.warn('Failed to save fallback events to localStorage.', e);
+    console.error('Fetch error:', error);
+    // Fallback: try old cache if exists
+    if (cached) {
+      try {
+        let events: Event[] = JSON.parse(cached);
+        events = addStatusData(events);
+        events = addPlaceholderImage(events);
+        return events;
+      } catch {}
     }
+    // Fallback: mockEvents
 
-    return fallbackEvents;
+    return [];
   }
 };
 
@@ -533,12 +254,13 @@ const getMockInfoResults = (): any => api_example_results_info;
 const getMockExampleEvents = (): any => api_example_future_events;
 
 
-export const fetchRidersByCategory = async (eventId: string, categoryId: string): Promise<Rider[]> => {
+export const fetchRidersByCategory = async (eventID: string, categoryId: string): Promise<Rider[]> => {
   await new Promise(resolve => setTimeout(resolve, 400));
   return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
 };
 
 export const createEvent = async (apiUrl: string, eventData: {
+  _id: string;
   eventID: string;
   name: string;
   startTime: string;
@@ -550,6 +272,7 @@ export const createEvent = async (apiUrl: string, eventData: {
   description?: string;
 }): Promise<Event> => {
   const newEvent: Event = {
+    _id: '',
     eventID: eventData.eventID,
     name: eventData.name,
     location: eventData.location || 'TBD',
@@ -567,10 +290,11 @@ export const createEvent = async (apiUrl: string, eventData: {
   // Store in localStorage for persistence
   localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
   
-  await new Promise(resolve => setTimeout(resolve, 300));
+  // await new Promise(resolve => setTimeout(resolve, 300));
   try {
     var url = apiUrl + "events"
     const response = await fetch( url, {
+      headers: { "Content-Type": "application/json" },
       method: "POST", body: JSON.stringify( newEvent )
     });
     if (!response.ok) throw new Error('Request failed');
@@ -581,35 +305,111 @@ export const createEvent = async (apiUrl: string, eventData: {
   return newEvent;
 };
 
-export const updateEvent = async (eventId: string, eventData: Partial<Event>): Promise<Event | null> => {
-  const eventIndex = mockEvents.findIndex(event => event.id === eventId);
-  
-  if (eventIndex === -1) {
-    throw new Error('Event not found');
-  }
+export const updateEvent = async (
+  eventID: string,
+  eventData: Partial<Event>,
+  apiUrl?: string
+): Promise<Event | null> => {
+  const LOCAL_STORAGE_KEY = 'eventsData';
 
-  // Update the event
-  mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...eventData };
-  
-  // Update localStorage
-  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
-  
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return mockEvents[eventIndex];
+  try {
+    // Load the current events (from localStorage/API via fetchEvents)
+    let events = await fetchEvents(apiUrl || '');
+    const eventIndex = events.findIndex((event) => event.eventID === eventID);
+
+    if (eventIndex === -1) throw new Error('Event not found');
+
+    // Merge the incoming update into the local event object
+    events[eventIndex] = { ...events[eventIndex], ...eventData };
+
+    let updatedEvent = events[eventIndex];
+
+    // --- API UPDATE ---
+    if (apiUrl) {
+      try {
+        const url = apiUrl.endsWith('/')
+          ? `${apiUrl}events`
+          : `${apiUrl}/events`;
+
+        const resp = await fetch(url, {
+          method: 'POST', // backend expects POST
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedEvent), // send full event
+        });
+
+        if (!resp.ok) {
+          throw new Error(`API update failed with status ${resp.status}`);
+        }
+
+        // Replace the updated event with the one returned from the API
+        const returnedData: Event = await resp.json();
+        events[eventIndex] = returnedData;
+        updatedEvent = returnedData;
+
+        console.log('Event successfully updated in API:', returnedData);
+      } catch (apiError) {
+        console.warn('API update failed, keeping local changes:', apiError);
+      }
+    }
+
+    // --- LOCAL STORAGE UPDATE ---
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
+
+    return updatedEvent;
+  } catch (error) {
+    console.error('Error updating event:', error);
+    return null;
+  }
 };
 
-export const deleteEvent = async (eventId: string): Promise<boolean> => {
-  const eventIndex = mockEvents.findIndex(event => event.id === eventId);
-  
-  if (eventIndex === -1) {
-    return false;
-  }
+export const deleteEvent = async (
+  eventID: string,
+  apiUrl: string
+): Promise<Event[]> => {
+  const LOCAL_STORAGE_KEY = 'eventsData';
 
-  mockEvents.splice(eventIndex, 1);
-  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
-  
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return true;
+  try {
+    // Load current events (using smart caching)
+    let events = await fetchEvents( apiUrl );
+    const eventIndex = events.findIndex((event) => event._id === eventID);
+    console.log("eventIndex", eventIndex)
+
+    if (eventIndex === -1) {
+      console.warn(`Event with ID ${eventID} not found`);
+      return [];
+    }
+    // Keep the event in case API fails and we need to rollback
+    const deletedEvent = events[eventIndex];
+
+    // --- API DELETE ---
+    if (apiUrl) {
+      try {
+        const url = apiUrl.endsWith('/')
+          ? `${apiUrl}events/${eventID}`
+          : `${apiUrl}/events/${eventID}`;
+
+        const resp = await fetch(url, { method: 'DELETE' });
+        if (!resp.ok) {
+          throw new Error(`API delete failed with status ${resp.status}`);
+        }
+
+        console.log(`Event ${eventID} successfully deleted in API`);
+        // If API deleted successfully, proceed to remove locally
+      } catch (apiError) {
+        console.warn(`API delete failed for event ${eventID}:`, apiError);
+        console.warn(`Removing ${eventID} locally only`);
+      }
+    }
+
+    // --- LOCAL STORAGE UPDATE ---
+    events.splice(eventIndex, 1); // remove from array
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
+
+    return events;
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    return [];
+  }
 };
 
 

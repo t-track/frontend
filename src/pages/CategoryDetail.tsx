@@ -5,16 +5,16 @@ import { Rider } from '../types';
 import { fetchRidersByCategory } from '../services/api';
 
 const CategoryDetail: React.FC = () => {
-  const { eventId, categoryName } = useParams<{ eventId: string; categoryName: string }>();
+  const { eventID, categoryName } = useParams<{ eventID: string; categoryName: string }>();
   const [riders, setRiders] = useState<Rider[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadRiders = async () => {
-      if (!eventId || !categoryName) return;
+      if (!eventID || !categoryName) return;
 
       try {
-        const data = await fetchRidersByCategory(eventId, categoryName);
+        const data = await fetchRidersByCategory(eventID, categoryName);
         setRiders(data);
       } catch (error) {
         console.error('Error loading riders:', error);
@@ -24,7 +24,7 @@ const CategoryDetail: React.FC = () => {
     };
 
     loadRiders();
-  }, [eventId, categoryName]);
+  }, [eventID, categoryName]);
 
   if (loading) {
     return (
@@ -44,7 +44,7 @@ const CategoryDetail: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <Link to={`/events/${eventId}`} className="flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 mb-4">
+        <Link to={`/events/${eventID}`} className="flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 mb-4">
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Event</span>
         </Link>

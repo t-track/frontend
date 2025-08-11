@@ -105,7 +105,7 @@ const Settings: React.FC = () => {
       };
 
       if (editingEvent) {
-        await updateEvent(editingEvent.eventID, eventData);
+        await updateEvent(editingEvent.eventID, eventData, apiUrl);
       } else {
         await createEvent(apiUrl, eventData);
       }
@@ -121,14 +121,15 @@ const Settings: React.FC = () => {
     }
   };
 
-  const handleDeleteEvent = async (eventId: string) => {
+  const handleDeleteEvent = async (eventID: string) => {
+    console.log("deleting", eventID)
     if (!confirm('Are you sure you want to delete this event?')) {
       return;
     }
-
+    
     try {
-      await deleteEvent(eventId);
-      setCustomEvents( await fetchEvents(apiUrl));
+      var neweEents = await deleteEvent(eventID, apiUrl);
+      setCustomEvents( neweEents );
     } catch (err: any) {
       console.error('Failed to delete event:', err);
     }
@@ -327,7 +328,7 @@ const Settings: React.FC = () => {
             ) : (
               <div className="space-y-3">
                 {customEvents.map((event) => (
-                  <div key={event.eventID} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <div key={event.eventID + event.name} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                     <div className="flex items-center space-x-4">
                       <img
                         src={event.backgroundImage}
@@ -355,7 +356,7 @@ const Settings: React.FC = () => {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteEvent(event.eventID)}
+                        onClick={() => handleDeleteEvent(event._id)}
                         className="p-2 text-red-600 hover:text-red-700 dark:text-red-400"
                       >
                         <Trash2 className="w-4 h-4" />
