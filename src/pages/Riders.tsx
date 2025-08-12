@@ -100,7 +100,7 @@ const RiderCard: React.FC<{ rider: Rider }> = ({ rider }) => {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{rider.name}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{rider.fifeId}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{rider.fiseId}</p>
             </div>
           </div>
           {rider.position && (

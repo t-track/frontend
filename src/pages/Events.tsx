@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
 import EventCard from '../components/EventCard';
 import { Event } from '../types';
+import { useApp } from '../contexts/AppContext';
 import { fetchEvents } from '../services/api';
 
 const Events: React.FC = () => {
+  const { apiUrl } = useApp();
   const [events, setEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +16,10 @@ const Events: React.FC = () => {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const data = await fetchEvents();
+        const data = await fetchEvents(apiUrl);
+        // sort events by the date
+        data.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+        console.log(data)
         setEvents(data);
         setFilteredEvents(data);
       } catch (error) {
@@ -102,7 +107,7 @@ const Events: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEvents.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard key={event.eventID + event.name} event={event} />
         ))}
       </div>
 

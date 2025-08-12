@@ -11,15 +11,16 @@ const EventDetail: React.FC = () => {
   const [event, setEvent] = useState<Event | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const { liveApiUrl } = useApp();
+  const { apiUrl } = useApp();
 
   useEffect(() => {
     const loadEventData = async () => {
+      console.log("eventid", id)
       if (!id) return;
-
+        console.log("error, eventid not defined")
       try {
         const [eventData, categoriesData] = await Promise.all([
-          fetchEventById(id),
+          fetchEventById(apiUrl, id),
           fetchCategories()
         ]);
         
@@ -110,10 +111,10 @@ const EventDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {event.status === 'live' && liveApiUrl && (
+          {event.status === 'live' && apiUrl && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Live Results</h2>
-              <LiveScoreboard apiUrl={liveApiUrl} />
+              <LiveScoreboard apiUrl={apiUrl} eventID={ event.eventID } />
             </div>
           )}
 
@@ -151,7 +152,7 @@ const EventDetail: React.FC = () => {
                 return (
                   <Link
                     key={categoryName}
-                    to={`/events/${event.id}/categories/${categoryName}`}
+                    to={`/events/${event.eventID}/categories/${categoryName}`}
                     className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
                     <div className="flex items-center justify-between">

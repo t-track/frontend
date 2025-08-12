@@ -109,7 +109,7 @@ const HorseCard: React.FC<{ horse: Horse }> = ({ horse }) => {
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm text-gray-600 dark:text-gray-400">
               <div>Owner: {horse.owner}</div>
-              <div>FISE ID: {horse.fifeId}</div>
+              <div>FISE ID: {horse.fiseId}</div>
             </div>
             <div className="flex items-center space-x-1">
               <Trophy className="w-4 h-4 text-amber-500" />

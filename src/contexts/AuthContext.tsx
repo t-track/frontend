@@ -6,9 +6,10 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
+// import { useApp } from './AppContext';
+
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
-
 interface UserProfile {
   uid: string;
   email: string;
@@ -27,6 +28,7 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const apiUrl = "https://api.t-track.rivieraapps.com/api/";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -46,7 +48,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user);
       
       if (user) {
-        // Get user profile from Firestore
+        // Get user profile from API
+        try {
+          var url = apiUrl + "users" + "/" + user.uid
+          const response = await fetch( url, { method: "GET" });
+          if (!response.ok) throw new Error('Request failed');
+          console.log("response", response.body)
+          // setUserProfile(response.body.json() as UserProfile);
+        }catch (error) {
+          console.log("ERROR: couldn't retrive user", error)
+        }
+        
         try {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
@@ -96,11 +108,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAdmin: email === 'admin@t-track.com', // Demo admin check
       displayName
     };
-    
     try {
-      await setDoc(doc(db, 'users', result.user.uid), userProfile);
-    } catch (error) {
-      console.error('Error creating user profile:', error);
+      var url = apiUrl + "users"
+      const response = await fetch( url, {
+        method: "POST", body: JSON.stringify( userProfile )
+      });
+      if (!response.ok) throw new Error('Request failed');
+    }catch (error) {
+      console.log("ERROR: couldn't save user", error)
     }
   };
 

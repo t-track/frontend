@@ -27,7 +27,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   };
 
   return (
-    <Link to={`/events/${event.id}`} className="block">
+    <Link to={`/events/${event._id}`} className="block">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
         <div
           className="h-48 bg-cover bg-center relative"
@@ -48,7 +48,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
               </div>
               <div className="flex items-center space-x-1">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(event.startTime).toLocaleDateString()}</span>
+                <span>{new Date(event.startTime).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
               </div>
             </div>
           </div>
