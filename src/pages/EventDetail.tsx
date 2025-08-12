@@ -7,7 +7,7 @@ import LiveScoreboard from '../components/LiveScoreboard';
 import { useApp } from '../contexts/AppContext';
 
 const EventDetail: React.FC = () => {
-  const { eventID } = useParams<{ eventID: string }>();
+  const { id } = useParams<{ id: string }>();
   const [event, setEvent] = useState<Event | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,11 +15,12 @@ const EventDetail: React.FC = () => {
 
   useEffect(() => {
     const loadEventData = async () => {
-      if (!eventID) return;
-
+      console.log("eventid", id)
+      if (!id) return;
+        console.log("error, eventid not defined")
       try {
         const [eventData, categoriesData] = await Promise.all([
-          fetchEventById(apiUrl, eventID),
+          fetchEventById(apiUrl, id),
           fetchCategories()
         ]);
         
@@ -33,7 +34,7 @@ const EventDetail: React.FC = () => {
     };
 
     loadEventData();
-  }, [eventID]);
+  }, [id]);
 
   if (loading) {
     return (

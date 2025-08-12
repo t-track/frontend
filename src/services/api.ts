@@ -142,7 +142,7 @@ function addPlaceholderImage(events: Event[]){
 }
 
 const LOCAL_STORAGE_TIME_KEY = 'eventsDataUpdated';
-const CACHE_MAX_AGE_MS = 6_000; // 6s 
+const CACHE_MAX_AGE_MS = 60_000; // 60s 
 
 export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
   const now = Date.now();
@@ -150,7 +150,6 @@ export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
   const cacheTime = Number(localStorage.getItem(LOCAL_STORAGE_TIME_KEY) || '0');
   // Use cache if it's fresh
   if (cached && (now - cacheTime < CACHE_MAX_AGE_MS)) {
-    console.log("Use cache if it's fresh")
     try {
       let events: Event[] = JSON.parse(cached);
       events = addStatusData(events);
@@ -161,12 +160,10 @@ export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
 
   // Otherwise fetch from API
   try {
-    console.log("Fetching from API")
     const url = apiUrl.endsWith('/') ? apiUrl + 'events' : apiUrl + '/events';
     const response = await fetch(url);
     if (!response.ok) throw new Error('API error');
     let events: Event[] = await response.json();
-    console.log("response", events)
     events = addStatusData(events);
     events = addPlaceholderImage(events);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(events));
@@ -183,8 +180,6 @@ export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
         return events;
       } catch {}
     }
-    // Fallback: mockEvents
-
     return [];
   }
 };
@@ -236,7 +231,6 @@ export const fetchLiveData = async (apiUrl: string, eventID: string): Promise<Li
  
   if (!apiUrl || apiUrl === 'mock') {
   }
-  console.log("apiUrl",apiUrl)
   try {
     const response = await fetch(apiUrl + "livedata/" + eventID );
     if (!response.ok) throw new Error('Failed to fetch live data');
@@ -248,11 +242,9 @@ export const fetchLiveData = async (apiUrl: string, eventID: string): Promise<Li
   }
 };
 
-
 const getMockLiveData = (): LiveData => example_live_event as LiveData;
 const getMockInfoResults = (): any => api_example_results_info;
 const getMockExampleEvents = (): any => api_example_future_events;
-
 
 export const fetchRidersByCategory = async (eventID: string, categoryId: string): Promise<Rider[]> => {
   await new Promise(resolve => setTimeout(resolve, 400));
@@ -372,7 +364,6 @@ export const deleteEvent = async (
     // Load current events (using smart caching)
     let events = await fetchEvents( apiUrl );
     const eventIndex = events.findIndex((event) => event._id === eventID);
-    console.log("eventIndex", eventIndex)
 
     if (eventIndex === -1) {
       console.warn(`Event with ID ${eventID} not found`);

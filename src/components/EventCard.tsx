@@ -27,7 +27,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   };
 
   return (
-    <Link to={`/events/${event.eventID}`} className="block">
+    <Link to={`/events/${event._id}`} className="block">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
         <div
           className="h-48 bg-cover bg-center relative"
