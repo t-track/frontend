@@ -105,7 +105,7 @@ const Settings: React.FC = () => {
       };
 
       if (editingEvent) {
-        await updateEvent(editingEvent.eventID, eventData, apiUrl);
+        await updateEvent(editingEvent._id, eventData, apiUrl);
       } else {
         await createEvent(apiUrl, eventData);
       }
