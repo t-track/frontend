@@ -9,12 +9,6 @@ export const fetchFutureEvents = async (): Promise<any> => {
   return getMockExampleEvents();
 };
 
-// API endpoints for event IDs
-export const fetchEventIDs = async (): Promise<any> => {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return getMockEventIDs();
-};
-
 export const fetchResultsInfo = async (): Promise<any> => {
   await new Promise(resolve => setTimeout(resolve, 300));
   return getMockInfoResults();
@@ -24,12 +18,9 @@ export const fetchResultsInfo = async (): Promise<any> => {
 let mockEvents: any[] = [];
 
 const LOCAL_STORAGE_KEY = 'eventsData1';
+const LOCAL_STORAGE_TIME_KEY = 'eventsDataUpdated';
+const CACHE_MAX_AGE_MS = 60_000; // 60s 
 
-const getMockEventIDs = (): string[] => [
-  "340000","340001","340002","340003","340004","340005","340006","340007","340008","340009","340010",
-  "340011","340420","340501","341453","341520","341665","342379","342379","342741","343452","343526",
-  "343879","343880","343882","342379","345604","349041"
-];
 
 const mockRiders: Rider[] = [
   {
@@ -141,8 +132,7 @@ function addPlaceholderImage(events: Event[]){
   return events
 }
 
-const LOCAL_STORAGE_TIME_KEY = 'eventsDataUpdated';
-const CACHE_MAX_AGE_MS = 60_000; // 60s 
+
 
 export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
   const now = Date.now();
@@ -225,7 +215,10 @@ export const fetchCategories = async (): Promise<Category[]> => {
   return mockCategories;
 };
 
-export const fetchLiveData = async (apiUrl: string, eventID: string): Promise<LiveData | null> => {
+export const fetchLiveData = async (
+    apiUrl: string, 
+    eventID: string
+  ): Promise<LiveData | null> => {
   // Return mock data for development/demo
   await new Promise(resolve => setTimeout(resolve, 300));
  
@@ -246,23 +239,20 @@ const getMockLiveData = (): LiveData => example_live_event as LiveData;
 const getMockInfoResults = (): any => api_example_results_info;
 const getMockExampleEvents = (): any => api_example_future_events;
 
-export const fetchRidersByCategory = async (eventID: string, categoryId: string): Promise<Rider[]> => {
-  await new Promise(resolve => setTimeout(resolve, 400));
-  return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
-};
-
-export const createEvent = async (apiUrl: string, eventData: {
-  _id: string;
-  eventID: string;
-  name: string;
-  startTime: string;
-  endTime: string;
-  subscriptionDeadline: string;
-  backgroundImage: string;
-  location?: string;
-  categories?: string[];
-  description?: string;
-}): Promise<Event> => {
+export const createEvent = async (
+  apiUrl: string, 
+  eventData: {
+    _id: string;
+    eventID: string;
+    name: string;
+    startTime: string;
+    endTime: string;
+    subscriptionDeadline: string;
+    backgroundImage: string;
+    location?: string;
+    categories?: string[];
+    description?: string;
+  }): Promise<Event> => {
   const newEvent: Event = {
     _id: '',
     eventID: eventData.eventID,
@@ -280,7 +270,7 @@ export const createEvent = async (apiUrl: string, eventData: {
   mockEvents.push(newEvent);
   
   // Store in localStorage for persistence
-  localStorage.setItem('mockEvents', JSON.stringify(mockEvents));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mockEvents));
   
   // await new Promise(resolve => setTimeout(resolve, 300));
   try {
@@ -293,21 +283,18 @@ export const createEvent = async (apiUrl: string, eventData: {
   }catch (error) {
     console.log("ERROR: couldn't save event", error)
   }
-
   return newEvent;
 };
 
 export const updateEvent = async (
-  eventID: string,
+  id: string,
   eventData: Partial<Event>,
   apiUrl?: string
 ): Promise<Event | null> => {
-  const LOCAL_STORAGE_KEY = 'eventsData';
-
   try {
     // Load the current events (from localStorage/API via fetchEvents)
     let events = await fetchEvents(apiUrl || '');
-    const eventIndex = events.findIndex((event) => event.eventID === eventID);
+    const eventIndex = events.findIndex((event) => event._id === id);
 
     if (eventIndex === -1) throw new Error('Event not found');
 
@@ -358,8 +345,6 @@ export const deleteEvent = async (
   eventID: string,
   apiUrl: string
 ): Promise<Event[]> => {
-  const LOCAL_STORAGE_KEY = 'eventsData';
-
   try {
     // Load current events (using smart caching)
     let events = await fetchEvents( apiUrl );
@@ -403,6 +388,10 @@ export const deleteEvent = async (
   }
 };
 
+export const fetchRidersByCategory = async (eventID: string, categoryId: string): Promise<Rider[]> => {
+  await new Promise(resolve => setTimeout(resolve, 400));
+  return mockRiders.filter(rider => rider.id === '1'); // Mock filtering
+};
 
 
 // Available cover images
