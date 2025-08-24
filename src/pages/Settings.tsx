@@ -17,6 +17,7 @@ const Settings: React.FC = () => {
   const [eventForm, setEventForm] = React.useState({
     eventID: '',
     name: '',
+    apiKey: '',
     startTime: '',
     endTime: '',
     subscriptionDeadline: '',
@@ -60,6 +61,7 @@ const Settings: React.FC = () => {
     setEventForm( {
       eventID: '',
       name: '',
+      apiKey: '',
       startTime: '',
       endTime: '',
       backgroundImage: coverImages[0].url,
@@ -76,11 +78,12 @@ const Settings: React.FC = () => {
     setEventForm({
       eventID: event.eventID,
       name: event.name,
+      apiKey: event.apiKey,
       startTime: event.startTime.slice(0, 16), // Format for datetime-local input
       endTime: event.endTime.slice(0, 16), // Format for datetime-local input
       backgroundImage: event.backgroundImage,
       location: event.location,
-      subscriptionDeadline: event.subscriptionDeadline,
+      subscriptionDeadline: event.subscriptionDeadline.slice(0, 16),
       description: ''
     });
     setError('');
@@ -228,75 +231,6 @@ const Settings: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Live API Configuration */}
-        {isAdmin && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Live API Configuration</h2>
-          <div className="mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-            <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              <span className="text-sm text-amber-800 dark:text-amber-200 font-medium">Administrator Only</span>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="liveApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Live API Key
-              </label>
-              <input
-                type="url"
-                id="liveApiKey"
-                value={liveApiKey}
-                onChange={(e) => setLiveApiKey(e.target.value)}
-                placeholder="https://api.t-tracksystem.com/live"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Enter the API key for the live race data API endpoint
-              </p>
-            </div>
-            <div>
-              <label htmlFor="eventApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Event API Key
-              </label>
-              <input
-                type="url"
-                id="eventApiKey"
-                value={eventApiKey}
-                onChange={(e) => setEventApiKey(e.target.value)}
-                placeholder="https://api.t-tracksystem.com/live"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Enter the API key for the event race data API endpoint
-              </p>
-            </div>
-            <div>
-              <label htmlFor="historyApiKey" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                History API Keys
-              </label>
-              <input
-                type="url"
-                id="historyApiKey"
-                value={historyApiKey}
-                onChange={(e) => setHistoryApiKey(e.target.value)}
-                placeholder="https://api.t-tracksystem.com/live"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Enter the API key for the history data API endpoint
-              </p>
-            </div>
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-              <p className="text-sm text-amber-800 dark:text-amber-200">
-                <strong>Note:</strong> The API should return JSON data in the format used by the T-track system.
-                Live data will be refreshed every 30 seconds during events.
-              </p>
-            </div>
-          </div>
-        </div>
-        )}
 
         {/* Event Management */}
         {isAdmin && (
@@ -452,6 +386,23 @@ const Settings: React.FC = () => {
                 )}
               </div>
 
+              {/* API key ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Event api key *
+                </label>
+                <input
+                  type="text"
+                  maxLength={40}
+                  value={eventForm.apiKey}
+                  onChange={(e) => {
+                    setEventForm({ ...eventForm, apiKey: e.target.value });
+                  }}
+                  placeholder="e.g., RPAAAA7829IFXIAAASY6CAAAAVV111G"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-600"
+                />
+              </div>
+
               {/* Event Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -475,8 +426,26 @@ const Settings: React.FC = () => {
                   type="datetime-local"
                   value={eventForm.startTime}
                   onChange={(e) => { 
-                    setEventForm({ ...eventForm, startTime: e.target.value,  endTime: e.target.value  } );
-                  } }
+                    const startTime = e.target.value; 
+                    // Parse start time string to Date
+                    const startDate = new Date(startTime);
+                    // Add 8 hours in milliseconds
+                    const endDate = new Date(startDate.getTime() + 8 * 60 * 60 * 1000);
+                    // Format endDate back to datetime-local string (YYYY-MM-DDTHH:mm)
+                    const endTime = endDate.toISOString().slice(0,16);
+                    // Calculate subscriptionDeadline = 5 days before eventDate
+                    const subscriptionDeadlineDate = new Date(startDate.getTime() - 5 * 24 * 60 * 60 * 1000);
+
+                    // Format as needed, for example ISO string or datetime-local format
+                    const subscriptionDeadline = subscriptionDeadlineDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+
+                    setEventForm({ 
+                      ...eventForm, 
+                      startTime, 
+                      endTime,
+                      subscriptionDeadline
+                    });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>

@@ -176,9 +176,10 @@ export const fetchEvents = async (apiUrl: string): Promise<Event[]> => {
 
 export const fetchEventById = async (apiUrl: string, id: string|null ): Promise<Event | null> => {
   try {
+    
     var url = apiUrl + "events"
     if( id != '' || id !== undefined || id != null ){ url += '/' + id }
-  
+    console.log("fetching single event ", url)
     const response = await fetch( url );
     if (!response.ok) throw new Error('Failed to fetch live data');
     var event: Event = await response.json()
@@ -217,15 +218,16 @@ export const fetchCategories = async (): Promise<Category[]> => {
 
 export const fetchLiveData = async (
     apiUrl: string, 
-    eventID: string
+    id: string
   ): Promise<LiveData | null> => {
   // Return mock data for development/demo
   await new Promise(resolve => setTimeout(resolve, 300));
  
-  if (!apiUrl || apiUrl === 'mock') {
-  }
+  if (!apiUrl || apiUrl === 'mock') { console.log("Error: apiurl"); return getMockLiveData(); }
+  if (!id || id === '') { console.log("Error: id"); return getMockLiveData(); }
+
   try {
-    const response = await fetch(apiUrl + "livedata/" + eventID );
+    const response = await fetch(apiUrl + "livedata/" + id );
     if (!response.ok) throw new Error('Failed to fetch live data');
     return await response.json();
   } catch (error) {
@@ -322,6 +324,7 @@ export const updateEvent = async (
 
         // Replace the updated event with the one returned from the API
         const returnedData: Event = await resp.json();
+        console.log("returnedData", returnedData );
         events[eventIndex] = returnedData;
         updatedEvent = returnedData;
 

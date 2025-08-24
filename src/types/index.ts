@@ -2,6 +2,7 @@ export interface Event {
   _id: string;
   eventID: string;
   name: string;
+  apiKey: string;
   location: string;
   startTime: string;
   endTime: string;

@@ -7,7 +7,7 @@ import LiveScoreboard from '../components/LiveScoreboard';
 import { useApp } from '../contexts/AppContext';
 
 const EventDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { eventid } = useParams<{ eventid: string }>();
   const [event, setEvent] = useState<Event | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,15 +15,19 @@ const EventDetail: React.FC = () => {
 
   useEffect(() => {
     const loadEventData = async () => {
-      console.log("eventid", id)
-      if (!id) return;
-        console.log("error, eventid not defined")
+      console.log("eventid", eventid);
+
+      if (!eventid) {
+        console.log("error, eventid not defined");
+        return;
+      }
+
       try {
+        console.log("eventid ", eventid)
         const [eventData, categoriesData] = await Promise.all([
-          fetchEventById(apiUrl, id),
+          fetchEventById(apiUrl, eventid),
           fetchCategories()
         ]);
-        
         setEvent(eventData);
         setCategories(categoriesData);
       } catch (error) {
@@ -34,7 +38,7 @@ const EventDetail: React.FC = () => {
     };
 
     loadEventData();
-  }, [id]);
+  }, [eventid, apiUrl]);
 
   if (loading) {
     return (
@@ -111,10 +115,10 @@ const EventDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {event.status === 'live' && apiUrl && (
+          { (event.status === 'live' || event.status === 'finished') && apiUrl && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Live Results</h2>
-              <LiveScoreboard apiUrl={apiUrl} eventID={ event.eventID } />
+              <LiveScoreboard apiUrl={apiUrl} eventid={ event._id } eventStatus={event.status} />
             </div>
           )}
 
