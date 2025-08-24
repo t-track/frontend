@@ -324,6 +324,7 @@ export const updateEvent = async (
 
         // Replace the updated event with the one returned from the API
         const returnedData: Event = await resp.json();
+        console.log("returnedData", returnedData );
         events[eventIndex] = returnedData;
         updatedEvent = returnedData;
 

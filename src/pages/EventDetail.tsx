@@ -115,10 +115,10 @@ const EventDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {event.status === 'live' && apiUrl && (
+          { (event.status === 'live' || event.status === 'finished') && apiUrl && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Live Results</h2>
-              <LiveScoreboard apiUrl={apiUrl} eventid={ event._id } />
+              <LiveScoreboard apiUrl={apiUrl} eventid={ event._id } eventStatus={event.status} />
             </div>
           )}
 

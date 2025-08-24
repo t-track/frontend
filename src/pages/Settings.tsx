@@ -83,7 +83,7 @@ const Settings: React.FC = () => {
       endTime: event.endTime.slice(0, 16), // Format for datetime-local input
       backgroundImage: event.backgroundImage,
       location: event.location,
-      subscriptionDeadline: event.subscriptionDeadline,
+      subscriptionDeadline: event.subscriptionDeadline.slice(0, 16),
       description: ''
     });
     setError('');
@@ -461,14 +461,13 @@ const Settings: React.FC = () => {
                   Event api key *
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   maxLength={40}
                   value={eventForm.apiKey}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    setEventForm({ ...eventForm, apiKey: value });
+                    setEventForm({ ...eventForm, apiKey: e.target.value });
                   }}
-                  placeholder="e.g., 340001"
+                  placeholder="e.g., RPAAAA7829IFXIAAASY6CAAAAVV111G"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-600"
                 />
               </div>

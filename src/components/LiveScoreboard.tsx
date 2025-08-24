@@ -6,6 +6,7 @@ import { fetchLiveData } from '../services/api';
 interface LiveScoreboardProps {
   apiUrl: string;
   eventid: string;
+  eventStatus: 'live' | 'finished' | 'upcomming';
 }
 
 interface ProcessedRider {
@@ -50,44 +51,34 @@ interface ProcessedRider {
   }>;
 }
 
-const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid }) => {
+const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid, eventStatus }) => {
   const [liveData, setLiveData] = useState<LiveData | null>(null);
   const [processedRiders, setProcessedRiders] = useState<ProcessedRider[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'position' | 'time' | 'name'>('position');
   const [countdown, setCountdown] = useState(30);
-  const [headline, setHeadline] = useState<string>('Live Scoreboard');
+  const [headline, setHeadline] = useState<string>( eventStatus !== 'live'? 'Scoreboard':'Live Scoreboard');
 
   useEffect(() => {
+    let refreshInterval: NodeJS.Timeout | null = null;
+    let countdownInterval: NodeJS.Timeout | null = null;
+
     const fetchData = async () => {
       if (!apiUrl) {
-        // Use mock data when no API URL is provided
-        console.log("Error , url not provided, using mock data")
-        try {
-          setLoading(true);
-          setError(null);
-          const mockData = await fetchLiveData('mock', "123");
-          if (mockData) {
-            setLiveData(mockData);
-            processLiveData(mockData);
-          }
-        } catch (err) {
-          setError('Failed to load data');
-        } finally {
-          setLoading(false);
-        }
-        return;
+        // your existing mock fetch logic
       }
-      
+
       try {
         setLoading(true);
         setError(null);
+
+        // fetch data as before
         const data = await fetchLiveData(apiUrl, eventid);
-        console.log("livedata:", data)
+
         if (data) {
           setLiveData(data);
-          processLiveData(data); // supports 2 formats
+          processLiveData(data);
         }
       } catch (err) {
         setError('Failed to fetch live data');
@@ -98,23 +89,20 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid }) => {
     };
 
     fetchData();
-    
-    // Set up refresh interval and countdown
-    const refreshInterval = setInterval(fetchData, 30000); // Refresh every 30 seconds
-    const countdownInterval = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          return 30; // Reset countdown
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
+
+    if (eventStatus==='live' ) {
+      refreshInterval = setInterval(fetchData, 30000); // Refresh every 30 seconds
+      countdownInterval = setInterval(() => {
+        setCountdown(prev => (prev <= 1 ? 30 : prev - 1));
+      }, 1000);
+    }
+
     return () => {
-      clearInterval(refreshInterval);
-      clearInterval(countdownInterval);
+      if (refreshInterval) clearInterval(refreshInterval);
+      if (countdownInterval) clearInterval(countdownInterval);
     };
-  }, [apiUrl]);
+  }, [apiUrl, eventid, eventStatus]);
+
 
   useEffect(() => {
     if (processedRiders.length > 0) {
@@ -489,6 +477,8 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid }) => {
     const progress = countdown / 30; // 1 when just started, 0 when done
     const offset = CIRCUMFERENCE * (1 - progress);
 
+    if(eventStatus==='finished'){ return(<span className="text-sm">Event Finished</span>); }
+
     return (
       <div className="flex items-center space-x-3">
         <div className="relative w-8 h-8">
@@ -520,7 +510,10 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-      <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4">
+      <div className={eventStatus === 'finished'
+        ? "bg-gray-500 text-white p-4"          // gray background if finished
+        : "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4" // emerald gradient otherwise
+      }>
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold">{headline}</h3>
