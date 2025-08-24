@@ -17,6 +17,7 @@ const Settings: React.FC = () => {
   const [eventForm, setEventForm] = React.useState({
     eventID: '',
     name: '',
+    apiKey: '',
     startTime: '',
     endTime: '',
     subscriptionDeadline: '',
@@ -60,6 +61,7 @@ const Settings: React.FC = () => {
     setEventForm( {
       eventID: '',
       name: '',
+      apiKey: '',
       startTime: '',
       endTime: '',
       backgroundImage: coverImages[0].url,
@@ -76,6 +78,7 @@ const Settings: React.FC = () => {
     setEventForm({
       eventID: event.eventID,
       name: event.name,
+      apiKey: event.apiKey,
       startTime: event.startTime.slice(0, 16), // Format for datetime-local input
       endTime: event.endTime.slice(0, 16), // Format for datetime-local input
       backgroundImage: event.backgroundImage,
@@ -450,6 +453,24 @@ const Settings: React.FC = () => {
                 {editingEvent && (
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Event ID cannot be changed</p>
                 )}
+              </div>
+
+              {/* API key ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Event api key *
+                </label>
+                <input
+                  type="number"
+                  maxLength={40}
+                  value={eventForm.apiKey}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    setEventForm({ ...eventForm, apiKey: value });
+                  }}
+                  placeholder="e.g., 340001"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-600"
+                />
               </div>
 
               {/* Event Name */}

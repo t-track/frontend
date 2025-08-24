@@ -5,7 +5,7 @@ import { fetchLiveData } from '../services/api';
 
 interface LiveScoreboardProps {
   apiUrl: string;
-  eventID: string;
+  eventid: string;
 }
 
 interface ProcessedRider {
@@ -50,18 +50,20 @@ interface ProcessedRider {
   }>;
 }
 
-const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
+const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventid }) => {
   const [liveData, setLiveData] = useState<LiveData | null>(null);
   const [processedRiders, setProcessedRiders] = useState<ProcessedRider[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'position' | 'time' | 'name'>('position');
   const [countdown, setCountdown] = useState(30);
+  const [headline, setHeadline] = useState<string>('Live Scoreboard');
 
   useEffect(() => {
     const fetchData = async () => {
       if (!apiUrl) {
         // Use mock data when no API URL is provided
+        console.log("Error , url not provided, using mock data")
         try {
           setLoading(true);
           setError(null);
@@ -81,12 +83,11 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchLiveData(apiUrl, eventID);
-        
+        const data = await fetchLiveData(apiUrl, eventid);
+        console.log("livedata:", data)
         if (data) {
           setLiveData(data);
-          processLiveData(data);
-          
+          processLiveData(data); // supports 2 formats
         }
       } catch (err) {
         setError('Failed to fetch live data');
@@ -133,157 +134,330 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
     }
   }, [sortBy]);
 
+
+
+
+  // function processes data - suports 2 formats (json and XML)
   const processLiveData = (data: LiveData) => {
-    const riders: ProcessedRider[] = data.Data.map((riderData) => {
+    // Helper for format detection
+    const isOldFormat = data?.List?.Fields && data?.Data;
+    const isNewFormat = data?.list?.record;
+    const isFlatFormat = Array.isArray(data) && data[0]?.['RIDER NAME'];
+
+    const safeText = (obj: any) => obj?.['#text'] ?? '';
+    const safe = (val: any) => val ?? '';
+
+    if (isOldFormat) {
+      setHeadline(data.List.HeadLine1);
+      // ------  FORMAT 1 logic -----
+      const riders: ProcessedRider[] = data.Data.map((riderData) => {  
+        const getValue = (label: string, occurrence = 0, offset: number = 1 ) => {
+          const allIndices = data.List.Fields
+            .map((field, index) => ({ label: field.Label, index }))
+            .filter(field => field.label === label)
+            .map(field => field.index);
+          if (allIndices.length > occurrence) {
+            return riderData[allIndices[occurrence] + offset] ?? '';
+          }
+          return '';
+        };
+
+        return {
+          bib: getValue('Bib',0,-1),
+          name: getValue('RIDER NAME', 0, 2).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+          nationality: getValue('FLAG'),
+          horse: getValue('HORSE NAME'),
+          rank: getValue('Main rank'),
+          totalTime: getValue('Ride Time'),
+          phases: [
+            {
+              phase: '1',
+              gap: getValue('Start',0),
+              phaseKm: getValue('Phase Km',0 ), // ??
+              arrival: getValue('Arrival',0),
+              loopSpeed: getValue('Loop Speed',0),
+              loopTime: getValue('Loop Time',0),
+              inTime: getValue('In Time',0),
+              recoveryTime: getValue('Recovery Time',0),
+              phaseSpeed: getValue('Phase Speed',0),
+              rideTime: getValue('Ride Time',0),
+              rideSpeed: getValue('Ride Speed',0),
+              rank: getValue('Rank',0).replace(/[^a-z0-9]+/gi, ""),
+              startPhase: getValue('Start phase',0),
+              ready4nextphase: (getValue('Ready to next phase', 0) === 'yes'),
+              phaseInProgress: (getValue('Ready to next phase', 0) === '' ),
+              estimatedTimeArrival: (getValue('Extimated time arrival',0)),
+              estimatedLoopTime: (getValue('Extimated loop time',0))
+            },
+            {
+              phase: '2',
+              gap: getValue('Start',1,0),
+              phaseKm: getValue('Phase Km',1,0),
+              startPhase: getValue('Start phase',1,0),
+              arrival: getValue('Arrival',1,0),
+              loopSpeed: getValue('Loop Speed',1,0),
+              loopTime: getValue('Loop Time',1,0),
+              inTime: getValue('In Time',1,0),
+              recoveryTime: getValue('Recovery Time',1,0),
+              phaseSpeed: getValue('Phase Speed',1,0),
+              rideTime: getValue('Ride Time',1,0),
+              rideSpeed: getValue('Ride Speed',1,0),
+              rank: getValue('Rank',1,0).replace(/[^a-z0-9]+/gi, ""),
+              ready4nextphase: getValue('Ready to next phase', 1,0) === 'yes',
+              phaseInProgress: (getValue('Ready to next phase', 1,0) === '' ),
+              estimatedTimeArrival: (getValue('Extimated time arrival',1,0)),
+              estimatedLoopTime: (getValue('Extimated loop time',1,0))
+            },
+            {
+              phase: '3',
+              gap: getValue('Start',2,-1),
+              phaseKm: getValue('Phase Km',2,-1),
+              startPhase: getValue('Start phase',2,-1),
+              arrival: getValue('Arrival',2,-1),
+              loopSpeed: getValue('Loop Speed',2,-1),
+              loopTime: getValue('Loop Time',2,-1),
+              inTime: getValue('In Time',2,-1),
+              recoveryTime: getValue('Recovery Time',2,-1),
+              phaseSpeed: getValue('Phase Speed',2,-1),
+              rideTime: getValue('Ride Time',2,-1),
+              rideSpeed: getValue('Ride Speed',2,-1),
+              rank: getValue('Rank',2,-1).replace(/[^a-z0-9]+/gi, ""),
+              ready4nextphase: getValue('Ready to next phase', 2,-1) === 'yes',
+              phaseInProgress: (getValue('Ready to next phase', 2,-1) === '' ),
+              estimatedTimeArrival: (getValue('Extimated time arrival',2,-1)), // used for the loading bar
+              estimatedLoopTime: (getValue('Extimated loop time',2,-1))
+            }
+          ],
+          veterinary: [
+            {
+              phase: 'PRE',
+              recoveryTimeVet: getValue( 'Recovery Time Vet' , 0 , -4 ) ,
+              heartRate: getValue('Heart Rate',0, -4 ),
+              recIndex: getValue('Rec. Index',0, -4 ),
+              respiration: getValue('Resp.',0, -4 ),
+              mucous: getValue('Mucous',0, -4 ),
+              capRefill: getValue('Cap. Refill',0, -4 ),
+              skin: getValue('Skin',0, -4 ),
+              gutSound: getValue('Gut Sounds',0, -4 ),
+              girthBackWhiters: getValue('Girth Back Whiters',0, -4 ),
+              muscleTone: getValue('Muscle Tone',0, -4 ),
+              gait: getValue('Gait',0, -4 ),
+              veterinary: getValue('Veterinary',0, -4 ),
+              RI: getValue('R.I.',0, -4 )
+              
+            },
+            {
+              phase: '1',
+              recoveryTimeVet: getValue( 'Recovery Time Vet' , 1 , -7),
+              heartRate: getValue('Heart Rate',1, -7 ),
+              recIndex: getValue('Rec. Index',1, -7 ),
+              respiration: getValue('Resp.',1, -7 ),
+              mucous: getValue('Mucous',1, -7 ),
+              capRefill: getValue('Cap. Refill',1, -7 ),
+              skin: getValue('Skin',1, -7 ),
+              gutSound: getValue('Gut Sounds',1, -7 ),
+              girthBackWhiters: getValue('Girth Back Whiters',1, -7 ),
+              muscleTone: getValue('Muscle Tone',1, -7 ),
+              gait: getValue('Gait', 1, -7 ),
+              veterinary: getValue('Veterinary',1 , -7 ),
+              RI: getValue('R.I.', 1 , -7 )
+            },
+            {
+              phase: '2',
+              recoveryTimeVet: getValue( 'Recovery Time Vet' , 2 , 3),
+              heartRate: getValue('Heart Rate', 2, 3 ),
+              recIndex: getValue('Rec. Index', 2, 3 ),
+              respiration: getValue('Resp.', 2, 3 ),
+              mucous: getValue('Mucous', 2, 3 ),
+              capRefill: getValue('Cap. Refill', 2, 3 ),
+              skin: getValue('Skin', 2, 3 ),
+              gutSound: getValue('Gut Sounds', 2, 3 ),
+              girthBackWhiters: getValue('Girth Back Whiters', 2, 3 ),
+              muscleTone: getValue('Muscle Tone', 2, 3 ),
+              gait: getValue('Gait', 2, 3 ),
+              veterinary: getValue('Veterinary', 2, 3 ),
+              RI: getValue('R.I.', 2, 3 )
+            },
+            {
+              phase: '3',
+              heartRate: getValue('Heart Rate', 3, 13 ),
+              recIndex: getValue('Rec. Index', 3, 13 ),
+              respiration: getValue('Resp.', 3, 13 ),
+              mucous: getValue('Mucous', 3, 13 ),
+              capRefill: getValue('Cap. Refill', 3, 13 ),
+              skin: getValue('Skin', 3, 13 ),
+              gutSound: getValue('Gut Sounds', 3, 13 ),
+              girthBackWhiters: getValue('Girth Back Whiters', 3, 13 ),
+              muscleTone: getValue('Muscle Tone', 3, 13 ),
+              gait: getValue('Gait', 3, 13 ),
+              veterinary: getValue('Veterinary', 3, 13 ),
+              RI: getValue('R.I.', 3, 13 ),
+            }
+          ]
+        };
+      });
+      setProcessedRiders(riders);
+
+    }
+    else if (isNewFormat) {
       
-      const getValue = (label: string, occurrence = 0, offset: number = 1 ) => {
-        const allIndices = data.List.Fields
-          .map((field, index) => ({ label: field.Label, index }))
-          .filter(field => field.label === label)
-          .map(field => field.index);
-        if (allIndices.length > occurrence) {
-          return riderData[allIndices[occurrence] + offset] ?? '';
-        }
-        return '';
-      };
+      setHeadline(data.list?.HeadLine1 || 'Live Scoreboard');
+      // ------  FORMAT 2 logic -----
+      const riders: ProcessedRider[] = data.list.record.map((rec: any) => {
+      const safeText = (obj: any) => obj?.['#text'] ?? '';
+      const safeArrayText = (arr: any, idx: number) =>
+        Array.isArray(arr) && arr[idx] ? safeText(arr[idx]) : '';
+
+      // ---- Dynamically build phases ----
+      const phases: any[] = [];
+      const numPhases = Array.isArray(rec.Phase_Km) ? rec.Phase_Km.length : 0;
+
+      for (let i = 0; i < numPhases; i++) {
+        phases.push({
+          phase: String(i + 1),
+          gap: safeArrayText(rec.Start, i),
+          phaseKm: safeArrayText(rec.Phase_Km, i),
+          startPhase: safeArrayText(rec.Start_phase, i),
+          arrival: safeArrayText(rec.Arrival, i),
+          loopSpeed: safeArrayText(rec.Loop_Speed, i),
+          loopTime: safeArrayText(rec.Loop_Time, i),
+          inTime: safeArrayText(rec.In_Time, i),
+          recoveryTime: safeArrayText(rec.Recovery_Time, i),
+          phaseSpeed: safeArrayText(rec.Phase_Speed, i),
+          rideTime: safeArrayText(rec.Ride_Time, i),
+          rideSpeed: safeArrayText(rec.Ride_Speed, i),
+          rank: safeArrayText(rec.Rank, i),
+          ready4nextphase: safeArrayText(rec.Ready_to_next_phase, i) === 'yes',
+          phaseInProgress: safeArrayText(rec.Ready_to_next_phase, i) === '',
+          estimatedTimeArrival: safeArrayText(rec.Extimated_time_arrival, i),
+          estimatedLoopTime: safeArrayText(rec.Extimated_loop_time, i)
+        });
+      }
+
+      // ---- Dynamically build veterinary ----
+      const veterinary: any[] = [];
+      const numVetPhases = Array.isArray(rec.Heart_Rate) ? rec.Heart_Rate.length : 0;
+
+      for (let i = 0; i < numVetPhases; i++) {
+        // If your format keeps 'PRE' as index 0, then for i=0 we label 'PRE'
+        const phaseLabel = i === 0 ? 'PRE' : String(i);
+        veterinary.push({
+          phase: phaseLabel,
+          recoveryTimeVet: safeArrayText(rec.Recovery_Time_Vet, i),
+          heartRate: safeArrayText(rec.Heart_Rate, i),
+          recIndex: safeArrayText(rec.Rec_Index, i),
+          respiration: safeArrayText(rec.Resp, i),
+          mucous: safeArrayText(rec.Mucous, i),
+          capRefill: safeArrayText(rec.Cap_Refill, i),
+          skin: safeArrayText(rec.Skin, i),
+          gutSound: safeArrayText(rec.Gut_Sounds, i),
+          girthBackWhiters: safeArrayText(rec.Girth_Back_Whiters, i),
+          muscleTone: safeArrayText(rec.Muscle_Tone, i),
+          gait: safeArrayText(rec.Gait, i),
+          veterinary: safeArrayText(rec.Veterinary, i),
+          RI: safeArrayText(rec.RI, i)
+        });
+      }
 
       return {
-        bib: getValue('Bib',0,-1),
-        name: getValue('RIDER NAME', 0, 2).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-        nationality: getValue('FLAG'),
-        horse: getValue('HORSE NAME'),
-        rank: getValue('Main rank'),
-        totalTime: getValue('Ride Time'),
-        phases: [
-          {
-            phase: '1',
-            gap: getValue('Start',0),
-            phaseKm: getValue('Phase Km',0 ), // ??
-            arrival: getValue('Arrival',0),
-            loopSpeed: getValue('Loop Speed',0),
-            loopTime: getValue('Loop Time',0),
-            inTime: getValue('In Time',0),
-            recoveryTime: getValue('Recovery Time',0),
-            phaseSpeed: getValue('Phase Speed',0),
-            rideTime: getValue('Ride Time',0),
-            rideSpeed: getValue('Ride Speed',0),
-            rank: getValue('Rank',0).replace(/[^a-z0-9]+/gi, ""),
-            startPhase: getValue('Start phase',0),
-            ready4nextphase: (getValue('Ready to next phase', 0) === 'yes'),
-            phaseInProgress: (getValue('Ready to next phase', 0) === '' ),
-            estimatedTimeArrival: (getValue('Extimated time arrival',0)),
-            estimatedLoopTime: (getValue('Extimated loop time',0))
-          },
-          {
-            phase: '2',
-            gap: getValue('Start',1,0),
-            phaseKm: getValue('Phase Km',1,0),
-            startPhase: getValue('Start phase',1,0),
-            arrival: getValue('Arrival',1,0),
-            loopSpeed: getValue('Loop Speed',1,0),
-            loopTime: getValue('Loop Time',1,0),
-            inTime: getValue('In Time',1,0),
-            recoveryTime: getValue('Recovery Time',1,0),
-            phaseSpeed: getValue('Phase Speed',1,0),
-            rideTime: getValue('Ride Time',1,0),
-            rideSpeed: getValue('Ride Speed',1,0),
-            rank: getValue('Rank',1,0).replace(/[^a-z0-9]+/gi, ""),
-            ready4nextphase: getValue('Ready to next phase', 1,0) === 'yes',
-            phaseInProgress: (getValue('Ready to next phase', 1,0) === '' ),
-            estimatedTimeArrival: (getValue('Extimated time arrival',1,0)),
-            estimatedLoopTime: (getValue('Extimated loop time',1,0))
-          },
-          {
-            phase: '3',
-            gap: getValue('Start',2,-1),
-            phaseKm: getValue('Phase Km',2,-1),
-            startPhase: getValue('Start phase',2,-1),
-            arrival: getValue('Arrival',2,-1),
-            loopSpeed: getValue('Loop Speed',2,-1),
-            loopTime: getValue('Loop Time',2,-1),
-            inTime: getValue('In Time',2,-1),
-            recoveryTime: getValue('Recovery Time',2,-1),
-            phaseSpeed: getValue('Phase Speed',2,-1),
-            rideTime: getValue('Ride Time',2,-1),
-            rideSpeed: getValue('Ride Speed',2,-1),
-            rank: getValue('Rank',2,-1).replace(/[^a-z0-9]+/gi, ""),
-            ready4nextphase: getValue('Ready to next phase', 2,-1) === 'yes',
-            phaseInProgress: (getValue('Ready to next phase', 2,-1) === '' ),
-            estimatedTimeArrival: (getValue('Extimated time arrival',2,-1)), // used for the loading bar
-            estimatedLoopTime: (getValue('Extimated loop time',2,-1))
-          }
-        ],
-        veterinary: [
-          {
-            phase: 'PRE',
-            recoveryTimeVet: getValue( 'Recovery Time Vet' , 0 , -4 ) ,
-            heartRate: getValue('Heart Rate',0, -4 ),
-            recIndex: getValue('Rec. Index',0, -4 ),
-            respiration: getValue('Resp.',0, -4 ),
-            mucous: getValue('Mucous',0, -4 ),
-            capRefill: getValue('Cap. Refill',0, -4 ),
-            skin: getValue('Skin',0, -4 ),
-            gutSound: getValue('Gut Sounds',0, -4 ),
-            girthBackWhiters: getValue('Girth Back Whiters',0, -4 ),
-            muscleTone: getValue('Muscle Tone',0, -4 ),
-            gait: getValue('Gait',0, -4 ),
-            veterinary: getValue('Veterinary',0, -4 ),
-            RI: getValue('R.I.',0, -4 )
-            
-          },
-          {
-            phase: '1',
-            recoveryTimeVet: getValue( 'Recovery Time Vet' , 1 , -7),
-            heartRate: getValue('Heart Rate',1, -7 ),
-            recIndex: getValue('Rec. Index',1, -7 ),
-            respiration: getValue('Resp.',1, -7 ),
-            mucous: getValue('Mucous',1, -7 ),
-            capRefill: getValue('Cap. Refill',1, -7 ),
-            skin: getValue('Skin',1, -7 ),
-            gutSound: getValue('Gut Sounds',1, -7 ),
-            girthBackWhiters: getValue('Girth Back Whiters',1, -7 ),
-            muscleTone: getValue('Muscle Tone',1, -7 ),
-            gait: getValue('Gait', 1, -7 ),
-            veterinary: getValue('Veterinary',1 , -7 ),
-            RI: getValue('R.I.', 1 , -7 )
-          },
-          {
-            phase: '2',
-            recoveryTimeVet: getValue( 'Recovery Time Vet' , 2 , 3),
-            heartRate: getValue('Heart Rate', 2, 3 ),
-            recIndex: getValue('Rec. Index', 2, 3 ),
-            respiration: getValue('Resp.', 2, 3 ),
-            mucous: getValue('Mucous', 2, 3 ),
-            capRefill: getValue('Cap. Refill', 2, 3 ),
-            skin: getValue('Skin', 2, 3 ),
-            gutSound: getValue('Gut Sounds', 2, 3 ),
-            girthBackWhiters: getValue('Girth Back Whiters', 2, 3 ),
-            muscleTone: getValue('Muscle Tone', 2, 3 ),
-            gait: getValue('Gait', 2, 3 ),
-            veterinary: getValue('Veterinary', 2, 3 ),
-            RI: getValue('R.I.', 2, 3 )
-          },
-          {
-            phase: '3',
-            heartRate: getValue('Heart Rate', 3, 13 ),
-            recIndex: getValue('Rec. Index', 3, 13 ),
-            respiration: getValue('Resp.', 3, 13 ),
-            mucous: getValue('Mucous', 3, 13 ),
-            capRefill: getValue('Cap. Refill', 3, 13 ),
-            skin: getValue('Skin', 3, 13 ),
-            gutSound: getValue('Gut Sounds', 3, 13 ),
-            girthBackWhiters: getValue('Girth Back Whiters', 3, 13 ),
-            muscleTone: getValue('Muscle Tone', 3, 13 ),
-            gait: getValue('Gait', 3, 13 ),
-            veterinary: getValue('Veterinary', 3, 13 ),
-            RI: getValue('R.I.', 3, 13 ),
-          }
-        ]
+        bib: safeText(rec.Bib),
+        name: safeText(rec.RIDER_NAME),
+        nationality: safeText(rec.FLAG),
+        horse: safeText(rec.HORSE_NAME),
+        rank: safeText(rec.Main_rank),
+        totalTime: safeArrayText(rec.Ride_Time, 0),
+        phases,
+        veterinary
       };
+
     });
-    console.log("riders", riders)
+
     setProcessedRiders(riders);
+
+    }
+    else if (isFlatFormat) {
+      const riders: ProcessedRider[] = data.map((rec: any, idx: number) => {
+        // Find all phases based on TIMING X keys
+        const phases: any[] = [];
+        let phaseCounter = 0;
+
+        Object.keys(rec).forEach((key) => {
+          const timingMatch = key.match(/^TIMING\s+(\d+)/i);
+          if (timingMatch) {
+            const phaseNum = parseInt(timingMatch[1], 10);
+            phaseCounter++;
+
+            phases.push({
+              phase: String(phaseNum),
+              gap: rec["Start"] || "",
+              phaseKm: rec["Phase Km"] || "",
+              startPhase: rec["Start phase"] || "",
+              arrival: rec["Arrival"] || "",
+              loopSpeed: rec["Loop Speed"] || "",
+              loopTime: rec["Loop Time"] || "",
+              inTime: rec["In Time"] || "",
+              recoveryTime: rec["Recovery Time"] || "",
+              phaseSpeed: rec["Phase Speed"] || "",
+              rideTime: rec["Ride Time"] || "",
+              rideSpeed: rec["Ride Speed"] || "",
+              rank: rec["Rank"] || "",
+              ready4nextphase: rec["Ready to next phase"] === "yes",
+              phaseInProgress: rec["Ready to next phase"] === "",
+              estimatedTimeArrival: rec["Extimated time arrival"] || "",
+              estimatedLoopTime: rec["Extimated loop time"] || "",
+            });
+          }
+        });
+
+        // Find all vet checks based on VET key
+        const veterinary: any[] = [];
+        Object.keys(rec).forEach((key) => {
+          const vetMatch = key.match(/^VET\s*(PRE|\d+)/i);
+          if (vetMatch) {
+            const phaseLabel =
+              vetMatch[1].toUpperCase() === "PRE"
+                ? "PRE"
+                : String(parseInt(vetMatch[1], 10));
+
+            veterinary.push({
+              phase: phaseLabel,
+              recoveryTimeVet: rec["Recovery Time Vet"] || "",
+              heartRate: rec["Heart Rate"] || "",
+              recIndex: rec["Rec. Index"] || "",
+              respiration: rec["Resp."] || "",
+              mucous: rec["Mucous"] || "",
+              capRefill: rec["Cap. Refill"] || "",
+              skin: rec["Skin"] || "",
+              gutSound: rec["Gut Sounds"] || "",
+              girthBackWhiters: rec["Girth Back Whiters"] || "",
+              muscleTone: rec["Muscle Tone"] || "",
+              gait: rec["Gait"] || "",
+              veterinary: rec["Veterinary"] || "",
+              RI: rec["R.I."] || "",
+            });
+          }
+        });
+
+        return {
+          bib: rec["Bib"] || "",
+          name: rec["RIDER NAME"] || "",
+          nationality: rec["FLAG"] || "",
+          horse: rec["HORSE NAME"] || "",
+          rank: rec["Main rank"] || "",
+          totalTime: rec["Ride Time"] || "",
+          phases,
+          veterinary,
+        };
+      });
+
+      setProcessedRiders(riders);
+    }
   };
+
+
+
+
+
 
   if (error) {
     return (
@@ -349,7 +523,7 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
       <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-bold">{liveData.List.HeadLine1}</h3>
+            <h3 className="text-xl font-bold">{headline}</h3>
             <p className="text-emerald-100 text-sm">{processedRiders.length} riders competing</p>
           </div>
           {LiveCountdown( countdown )}
@@ -384,8 +558,8 @@ const LiveScoreboard: React.FC<LiveScoreboardProps> = ({ apiUrl, eventID }) => {
       </div>
 
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        {processedRiders.map((rider) => (
-          <RiderRow key={rider.bib} rider={rider} />
+        {processedRiders.map((rider, idx) => (
+          <RiderRow key={(rider.bib && rider.bib.toString()) || `row-${idx}`} rider={rider} />
         ))}
       </div>
     </div>
@@ -433,6 +607,67 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
     );
   };
 
+  const countryCodeToEmoji = (code: string) => {
+    if (!code) return '';
+
+    // Map IOC 3-letter codes to ISO 2-letter
+    const iocToIsoMap: Record<string, string> = {
+      SVK: 'SK', // Slovakia
+      LTU: 'LT', // Lithuania
+      IRQ: 'IQ', // Iraq
+      GBR: 'GB', // United Kingdom
+      POL: 'PL', // Poland
+      TUR: 'TR', // Turkey
+      GER: 'DE', // Germany
+      ITA: 'IT', // Italy
+      SLO: 'SLO', // SLovenia
+      CZE: 'CZ', // check
+      FRA: 'FR', // France
+      ESP: 'ES', // Spain
+      POR: 'PT', // Portugal
+      NED: 'NL', // Netherlands
+      BEL: 'BE', // Belgium
+      AUT: 'AT', // Austria
+      SUI: 'CH', // Switzerland
+      SWE: 'SE', // Sweden
+      NOR: 'NO', // Norway
+      DEN: 'DK', // Denmark
+      FIN: 'FI', // Finland
+      USA: 'US', // United States
+      CAN: 'CA', // Canada
+      AUS: 'AU', // Australia
+      NZL: 'NZ', // New Zealand
+      BRA: 'BR', // Brazil
+      MEX: 'MX', // Mexico
+      ARG: 'AR', // Argentina
+      RSA: 'ZA', // South Africa
+      CHN: 'CN', // China
+      JPN: 'JP', // Japan
+      KOR: 'KR', // South Korea
+      UAE: 'AE', // United Arab Emirates
+      QAT: 'QA', // Qatar
+      KUW: 'KW', // Kuwait
+      // Add more IOC -> ISO mappings here if needed
+    };
+
+    let upperCode = code.toUpperCase().replace(/[^A-Z]/g, '');
+
+    // Convert if it's an IOC code we know
+    if (upperCode.length === 3 && iocToIsoMap[upperCode]) {
+      upperCode = iocToIsoMap[upperCode];
+    }
+
+    // If not valid 2-char code after mapping, give up
+    if (upperCode.length !== 2) return '';
+
+    // Convert to emoji flag
+    return upperCode
+      .split('')
+      .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+      .join('');
+  };
+
+
   return (
     <>
       <div className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
@@ -458,14 +693,13 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
 
               <div className="flex items-center space-x-2 mb-1">
                 <Flag className="w-4 h-4 text-gray-400" />
-                <h4 className="font-bold text-gray-900 dark:text-white font-upper ">{rider.name}</h4>
+                <h4 className="font-bold text-gray-900 dark:text-white font-upper ">{rider.name} {countryCodeToEmoji(rider.nationality)} {/* emoji flag */} </h4>
               </div>
               
               <p id="horse name" className="text-sm text-gray-600 dark:text-gray-400 font-medium">{rider.horse}</p>
               
               <div className="flex items-center space-x-2 mb-1">
                 <span className="text-sm text-gray-600 dark:text-gray-400">{rider.bib}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">({rider.nationality})</span>
               </div>
               
             </div>
@@ -793,47 +1027,58 @@ const RiderRow = React.memo(({ rider }: { rider: ProcessedRider }) => {
 
 const PhaseProgressBar: React.FC<{ phases: any[] }> = ({ phases }) => {
   const totalPhases = phases.length;
-  
+
+  // 🔹 Identify current active phase index (first not completed phase)
+  const activePhaseIndex = phases.findIndex(
+    (phase) => !phase.ready4nextphase && !phase.completed // adjust if needed
+  );
+
   return (
     <div className="w-full mt-2">
       <div className="flex items-center justify-between w-full">
         {phases.map((phase, index) => {
           const isCompleted = phase.ready4nextphase;
-          const isInProgress = phase.phaseInProgress;
-          
+          const isActive = index === activePhaseIndex && activePhaseIndex !== -1;
+
           return (
-            <React.Fragment
-              key={`phase-${index}`}
-            >
+            <React.Fragment key={`phase-${index}`}>
               {/* Progress bar segment */}
               <div
                 className={`flex-1 h-2 mx-1 rounded-full transition-all duration-500 ${
-                  isCompleted 
-                    ? 'bg-green-500' 
-                    : isInProgress 
-                      ? 'bg-blue-500' 
+                  isCompleted
+                    ? 'bg-green-500'
+                    : isActive
+                      ? 'bg-blue-500'
                       : 'bg-gray-300 dark:bg-gray-600'
                 }`}
               />
-              
+
               {/* Circular phase indicator */}
-              {index < totalPhases  && (
+              {index < totalPhases && (
                 <div className="relative">
                   <div
                     className={`w-6 h-6 rounded-full border-2 transition-all duration-500 flex items-center justify-center ${
                       isCompleted
                         ? 'bg-green-500 border-green-500'
-                        : isInProgress
+                        : isActive
                           ? 'bg-blue-500 border-blue-500'
                           : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
                     }`}
                   >
                     {isCompleted && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     )}
-                    {isInProgress && !isCompleted && (
+                    {isActive && !isCompleted && (
                       <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                     )}
                   </div>
@@ -843,7 +1088,7 @@ const PhaseProgressBar: React.FC<{ phases: any[] }> = ({ phases }) => {
           );
         })}
       </div>
-      
+
       {/* Phase labels */}
       <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
         {phases.map((_, index) => (
@@ -855,5 +1100,6 @@ const PhaseProgressBar: React.FC<{ phases: any[] }> = ({ phases }) => {
     </div>
   );
 };
+
 
 export default LiveScoreboard;
